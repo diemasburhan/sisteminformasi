@@ -9,6 +9,8 @@ use App\Models\Page;
 use App\Models\Comment;
 use App\Models\ActivityLog;
 use App\Models\Setting;
+use App\Models\Lecturer;
+use App\Models\OrgMember;
 
 class DatabaseSeeder extends Seeder
 {
@@ -206,5 +208,67 @@ class DatabaseSeeder extends Seeder
             'activity' => 'Login',
             'details' => 'Staff logged in from IP 127.0.0.1'
         ]);
+
+        // 8. Seed Lecturers (Dosen Ahli & Pengajar)
+        $lecturers = [
+            [
+                'name' => 'Dr. Ahmad Sudrajat, M.T.',
+                'expertise' => 'gov',
+                'photo' => null
+            ],
+            [
+                'name' => 'Rina Wijaya, M.Kom.',
+                'expertise' => 'dev',
+                'photo' => null
+            ],
+            [
+                'name' => 'Budi Pratama, M.T.I.',
+                'expertise' => 'data',
+                'photo' => null
+            ],
+            [
+                'name' => 'Hesti Lestari, M.C.S.',
+                'expertise' => 'data',
+                'photo' => null
+            ],
+            [
+                'name' => 'Yusuf Mansur, M.T.',
+                'expertise' => 'dev',
+                'photo' => null
+            ]
+        ];
+
+        foreach ($lecturers as $lecturer) {
+            Lecturer::create($lecturer);
+        }
+
+        // 9. Seed OrgMembers (Struktur Organisasi)
+        $orgMembers = [
+            [
+                'name' => 'Dr. Ahmad Sudrajat, M.T.',
+                'role' => 'Kepala Program Studi',
+                'nip' => '19820412 201012 1 002',
+                'photo' => null,
+                'sort_order' => 1
+            ],
+            [
+                'name' => 'Rina Wijaya, M.Kom.',
+                'role' => 'Sekretaris Program Studi',
+                'nip' => '19870915 201503 2 001',
+                'photo' => null,
+                'sort_order' => 2
+            ],
+            [
+                'name' => 'Budi Pratama, M.T.I.',
+                'role' => 'Pembina Kemahasiswaan',
+                'nip' => '19900224 201801 1 003',
+                'photo' => null,
+                'sort_order' => 3
+            ]
+        ];
+
+        foreach ($orgMembers as $member) {
+            OrgMember::create($member);
+        }
     }
 }

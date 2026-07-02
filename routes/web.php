@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\LecturerController;
+use App\Http\Controllers\Admin\OrgMemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +45,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::post('/pages/bulk', [PageController::class, 'bulkAction'])->name('admin.pages.bulk');
     Route::post('/pages/autosave', [PageController::class, 'autoSave'])->name('admin.pages.autosave');
     Route::resource('pages', PageController::class, ['as' => 'admin'])->except(['show']);
+    
+    // Lecturers CMS
+    Route::resource('lecturers', LecturerController::class, ['as' => 'admin'])->except(['show']);
+
+    // Org Members CMS
+    Route::resource('org-members', OrgMemberController::class, ['as' => 'admin'])->except(['show']);
     
     // Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');

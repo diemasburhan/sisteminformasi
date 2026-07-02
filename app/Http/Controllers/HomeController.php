@@ -8,6 +8,8 @@ use App\Models\Page;
 use App\Models\Setting;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Models\Lecturer;
+use App\Models\OrgMember;
 
 class HomeController extends Controller
 {
@@ -36,7 +38,10 @@ class HomeController extends Controller
             'enrollment' => json_decode(Setting::get('stats_yearly_enrollment', '[]'), true),
         ];
 
-        return view('public.home', compact('posts', 'pages', 'stats'));
+        $lecturers = Lecturer::orderBy('name', 'asc')->get();
+        $orgMembers = OrgMember::orderBy('sort_order', 'asc')->get();
+
+        return view('public.home', compact('posts', 'pages', 'stats', 'lecturers', 'orgMembers'));
     }
 
     public function post($slug)

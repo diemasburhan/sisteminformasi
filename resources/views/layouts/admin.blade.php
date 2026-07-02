@@ -60,6 +60,36 @@
                             <a href="{{ route('admin.pages.create') }}" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Add New</a>
                         </li>
                     </ul>
+                <!-- Lecturers Submenu -->
+                <li class="admin-menu-item {{ Request::is('admin/lecturers*') ? 'active' : '' }}">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('lecturersSubmenu', event)">
+                        <i class="fa-solid fa-graduation-cap"></i> Dosen Pengajar
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="lecturersSubmenu" style="display: {{ Request::is('admin/lecturers*') ? 'block' : 'none' }};">
+                        <li class="admin-submenu-item {{ Route::is('admin.lecturers.index') ? 'active' : '' }}">
+                            <a href="{{ route('admin.lecturers.index') }}" class="admin-submenu-link"><i class="fa-solid fa-list"></i> Semua Dosen</a>
+                        </li>
+                        <li class="admin-submenu-item {{ Route::is('admin.lecturers.create') ? 'active' : '' }}">
+                            <a href="{{ route('admin.lecturers.create') }}" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Tambah Baru</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Org Members Submenu -->
+                <li class="admin-menu-item {{ Request::is('admin/org-members*') ? 'active' : '' }}">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('orgMembersSubmenu', event)">
+                        <i class="fa-solid fa-sitemap"></i> Struktur Organisasi
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="orgMembersSubmenu" style="display: {{ Request::is('admin/org-members*') ? 'block' : 'none' }};">
+                        <li class="admin-submenu-item {{ Route::is('admin.org-members.index') ? 'active' : '' }}">
+                            <a href="{{ route('admin.org-members.index') }}" class="admin-submenu-link"><i class="fa-solid fa-list"></i> Anggota Struktur</a>
+                        </li>
+                        <li class="admin-submenu-item {{ Route::is('admin.org-members.create') ? 'active' : '' }}">
+                            <a href="{{ route('admin.org-members.create') }}" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Tambah Anggota</a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="admin-menu-item">

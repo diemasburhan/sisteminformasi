@@ -14,9 +14,6 @@
                     <a href="#kurikulum" class="btn btn-secondary">
                         <i class="fa-solid fa-graduation-cap"></i> Lihat Kurikulum
                     </a>
-                    <a href="{{ route('login') }}" class="btn btn-outline" style="border-color: var(--secondary); color: var(--secondary);">
-                        <i class="fa-solid fa-right-to-bracket"></i> Portal Mahasiswa
-                    </a>
                 </div>
             </div>
             <div class="hero-image">
@@ -90,32 +87,26 @@
             <!-- Organization Structure -->
             <h2 class="section-title">Struktur Organisasi Program Studi</h2>
             <div class="org-grid">
-                <div class="org-card">
-                    <div class="org-avatar">
-                        <i class="fa-solid fa-user-tie"></i>
+                @forelse($orgMembers as $index => $member)
+                    <div class="org-card">
+                        <div class="org-avatar" style="color: {{ $index === 1 ? 'var(--secondary)' : ($index === 2 ? 'var(--success)' : 'var(--primary)') }}; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            @if($member->photo)
+                                <img src="{{ asset($member->photo) }}" alt="{{ $member->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <i class="fa-solid {{ $index === 2 ? 'fa-users-gear' : ($index === 1 ? 'fa-user-gear' : 'fa-user-tie') }}"></i>
+                            @endif
+                        </div>
+                        <h4>{{ $member->name }}</h4>
+                        <div class="role">{{ $member->role }}</div>
+                        @if($member->nip)
+                            <div class="nip">NIP. {{ $member->nip }}</div>
+                        @endif
                     </div>
-                    <h4>Dr. Ahmad Sudrajat, M.T.</h4>
-                    <div class="role">Kepala Program Studi</div>
-                    <div class="nip">NIP. 19820412 201012 1 002</div>
-                </div>
-
-                <div class="org-card">
-                    <div class="org-avatar" style="color: var(--secondary);">
-                        <i class="fa-solid fa-user-gear"></i>
+                @empty
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 20px;">
+                        Struktur organisasi belum diatur.
                     </div>
-                    <h4>Rina Wijaya, M.Kom.</h4>
-                    <div class="role">Sekretaris Program Studi</div>
-                    <div class="nip">NIP. 19870915 201503 2 001</div>
-                </div>
-
-                <div class="org-card">
-                    <div class="org-avatar" style="color: var(--success);">
-                        <i class="fa-solid fa-users-gear"></i>
-                    </div>
-                    <h4>Budi Pratama, M.T.I.</h4>
-                    <div class="role">Pembina Kemahasiswaan</div>
-                    <div class="nip">NIP. 19900224 201801 1 003</div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -138,37 +129,23 @@
 
             <!-- Lecturers Grid -->
             <div class="lecturer-grid" id="lecturerGrid">
-                
-                <div class="lecturer-card" data-expert="gov">
-                    <i class="fa-solid fa-user-circle fa-4x" style="color: var(--primary); margin-bottom: 15px; display: block;"></i>
-                    <h4>Dr. Ahmad Sudrajat, M.T.</h4>
-                    <span class="field">IT Governance</span>
-                </div>
-
-                <div class="lecturer-card" data-expert="dev">
-                    <i class="fa-solid fa-user-circle fa-4x" style="color: var(--secondary); margin-bottom: 15px; display: block;"></i>
-                    <h4>Rina Wijaya, M.Kom.</h4>
-                    <span class="field">Software Engineering</span>
-                </div>
-
-                <div class="lecturer-card" data-expert="data">
-                    <i class="fa-solid fa-user-circle fa-4x" style="color: var(--success); margin-bottom: 15px; display: block;"></i>
-                    <h4>Budi Pratama, M.T.I.</h4>
-                    <span class="field">Data Science</span>
-                </div>
-
-                <div class="lecturer-card" data-expert="data">
-                    <i class="fa-solid fa-user-circle fa-4x" style="color: var(--primary); margin-bottom: 15px; display: block;"></i>
-                    <h4>Hesti Lestari, M.C.S.</h4>
-                    <span class="field">Data Science</span>
-                </div>
-
-                <div class="lecturer-card" data-expert="dev">
-                    <i class="fa-solid fa-user-circle fa-4x" style="color: var(--secondary); margin-bottom: 15px; display: block;"></i>
-                    <h4>Yusuf Mansur, M.T.</h4>
-                    <span class="field">Software Engineering</span>
-                </div>
-
+                @forelse($lecturers as $lecturer)
+                    <div class="lecturer-card" data-expert="{{ $lecturer->expertise }}">
+                        @if($lecturer->photo)
+                            <img src="{{ asset($lecturer->photo) }}" alt="{{ $lecturer->name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; display: inline-block; border: 2px solid var(--border-color);">
+                        @else
+                            <i class="fa-solid fa-user-circle fa-4x" style="color: {{ $lecturer->expertise === 'dev' ? 'var(--secondary)' : ($lecturer->expertise === 'data' ? 'var(--success)' : 'var(--primary)') }}; margin-bottom: 15px; display: block;"></i>
+                        @endif
+                        <h4>{{ $lecturer->name }}</h4>
+                        <span class="field">
+                            {{ $lecturer->expertise === 'data' ? 'Data Science' : ($lecturer->expertise === 'dev' ? 'Software Engineering' : 'IT Governance') }}
+                        </span>
+                    </div>
+                @empty
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px;">
+                        Data dosen belum tersedia.
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
