@@ -29,6 +29,10 @@ class SettingController extends Controller
             'stats_majors_data' => Setting::get('stats_majors_data', '[]'),
             'stats_gender_data' => Setting::get('stats_gender_data', '[]'),
             'stats_yearly_enrollment' => Setting::get('stats_yearly_enrollment', '[]'),
+
+            // Appearance and Theme
+            'theme_color' => Setting::get('theme_color', 'default'),
+            'layout_style' => Setting::get('layout_style', 'full-width'),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -53,6 +57,10 @@ class SettingController extends Controller
             'stats_majors_data' => 'required|json',
             'stats_gender_data' => 'required|json',
             'stats_yearly_enrollment' => 'required|json',
+            
+            // Appearance
+            'theme_color' => 'required|string|max:50',
+            'layout_style' => 'required|string|max:50',
         ]);
 
         foreach ($inputs as $key => $value) {

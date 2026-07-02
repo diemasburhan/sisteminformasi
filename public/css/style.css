@@ -1665,3 +1665,162 @@ button, input, select, textarea {
         gap: 20px;
     }
 }
+
+/* --- STRUCTURAL THEMES (ADMIN ONLY) --- */
+
+/* 1. Minimalist Theme */
+body.theme-minimalist {
+    --bg-light: #F9FAFB;
+    --bg-white: #FFFFFF;
+    --border-color: transparent;
+    --shadow-sm: none;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --border-radius-lg: 4px;
+    --border-radius: 4px;
+}
+body.theme-minimalist .admin-sidebar {
+    border-right: 1px solid #F3F4F6;
+    background-color: #FFFFFF;
+}
+body.theme-minimalist .admin-navbar {
+    border-bottom: 1px solid #F3F4F6;
+    background-color: #FFFFFF;
+    box-shadow: none;
+}
+body.theme-minimalist .editor-sidebar-widget, 
+body.theme-minimalist .stat-card, 
+body.theme-minimalist .chart-card {
+    border: 1px solid #F3F4F6;
+    box-shadow: none;
+    background-color: #FFFFFF;
+}
+body.theme-minimalist .admin-menu-link.active {
+    background-color: #F3F4F6;
+    color: var(--primary);
+    border-left: 3px solid var(--primary);
+}
+
+/* 2. Modern Corporate Theme */
+body.theme-modern {
+    --bg-light: #F1F5F9;
+    --bg-white: rgba(255, 255, 255, 0.95);
+    --border-color: rgba(226, 232, 240, 0.8);
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --border-radius-lg: 24px;
+    --border-radius: 12px;
+}
+body.theme-modern .admin-sidebar {
+    margin: 15px 0 15px 15px;
+    height: calc(100vh - 30px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+}
+body.theme-modern .admin-navbar {
+    margin: 15px 15px 20px 15px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+body.theme-modern .admin-content-wrapper {
+    padding: 0 20px 20px 20px;
+}
+body.theme-modern .editor-sidebar-widget, 
+body.theme-modern .stat-card, 
+body.theme-modern .chart-card {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 2px solid rgba(255, 255, 255, 0.8);
+}
+body.theme-modern .admin-menu-link {
+    margin: 0 15px;
+    border-radius: 10px;
+}
+body.theme-modern .admin-menu-link.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 136, 255, 0.3);
+}
+
+/* --- STRUCTURAL THEMES (PUBLIC) --- */
+/* Minimalist Public */
+body.theme-minimalist .site-header,
+body.theme-minimalist .shortcut-card,
+body.theme-minimalist .org-card,
+body.theme-minimalist .lecturer-card,
+body.theme-minimalist .post-card,
+body.theme-minimalist .download-card {
+    border: 1px solid #F3F4F6;
+    box-shadow: none;
+}
+body.theme-minimalist .shortcut-card {
+    border-top: 1px solid #F3F4F6;
+}
+body.theme-minimalist .hero-section {
+    background: #FFFFFF;
+    color: var(--text-dark);
+    border-bottom: 1px solid #F3F4F6;
+}
+body.theme-minimalist .hero-content h2,
+body.theme-minimalist .hero-content p {
+    color: var(--text-dark);
+}
+body.theme-minimalist .hero-section::before {
+    display: none;
+}
+body.theme-minimalist .site-footer {
+    background-color: #F9FAFB;
+    color: var(--text-dark);
+    border-top: 1px solid #F3F4F6;
+}
+body.theme-minimalist .footer-widget h3 { color: var(--text-dark); }
+body.theme-minimalist .footer-widget h3::after { display: none; }
+body.theme-minimalist .social-icon { background-color: #F3F4F6; color: var(--text-dark); }
+body.theme-minimalist .social-icon:hover { background-color: var(--primary); color: #fff; }
+body.theme-minimalist .footer-bottom { border-top: 1px solid #F3F4F6; color: var(--text-muted); }
+
+/* Modern Corporate Public */
+body.theme-modern .shortcut-card,
+body.theme-modern .org-card,
+body.theme-modern .lecturer-card,
+body.theme-modern .post-card,
+body.theme-modern .download-card {
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: none;
+}
+body.theme-modern .site-header {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+body.theme-modern .hero-section {
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    margin-bottom: 20px;
+}
+
+/* --- LAYOUT SETTINGS --- */
+body.layout-boxed {
+    background-color: #e5e7eb;
+}
+body.layout-boxed .admin-layout,
+body.layout-boxed .site-header,
+body.layout-boxed main,
+body.layout-boxed .site-footer {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--bg-light);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+}
+body.layout-boxed .site-header {
+    background-color: var(--bg-white);
+}
+body.layout-boxed .admin-layout {
+    height: 100vh;
+}

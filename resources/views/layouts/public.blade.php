@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @yield('styles')
 </head>
-<body>
+@php
+    $themeColor = \App\Models\Setting::get('theme_color', 'default');
+    $layoutStyle = \App\Models\Setting::get('layout_style', 'full-width');
+@endphp
+<body class="theme-{{ $themeColor }} layout-{{ $layoutStyle }}">
 
     <!-- Header Navigation -->
     <header class="site-header">

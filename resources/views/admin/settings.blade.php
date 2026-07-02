@@ -102,6 +102,30 @@
                 </div>
             </div>
 
+            <!-- Appearance and Theme widget -->
+            <div class="editor-sidebar-widget" style="background-color: var(--bg-white); border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); padding: 30px; box-shadow: var(--shadow-sm);">
+                <div class="editor-widget-title" style="font-size: 1.1rem; font-weight: 700; margin-bottom: 20px;"><i class="fa-solid fa-palette"></i> Tampilan & Tema</div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label class="form-label" for="theme_color">Gaya Tema (Struktural)</label>
+                        <select name="theme_color" id="theme_color" class="form-control">
+                            <option value="default" {{ old('theme_color', $settings['theme_color']) == 'default' ? 'selected' : '' }}>Standar (Default LPKIA)</option>
+                            <option value="minimalist" {{ old('theme_color', $settings['theme_color']) == 'minimalist' ? 'selected' : '' }}>Minimalis (Bersih & Flat)</option>
+                            <option value="modern" {{ old('theme_color', $settings['theme_color']) == 'modern' ? 'selected' : '' }}>Modern Corporate (Glass & Bayangan)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="layout_style">Gaya Layout</label>
+                        <select name="layout_style" id="layout_style" class="form-control">
+                            <option value="full-width" {{ old('layout_style', $settings['layout_style']) == 'full-width' ? 'selected' : '' }}>Penuh (Full-width)</option>
+                            <option value="boxed" {{ old('layout_style', $settings['layout_style']) == 'boxed' ? 'selected' : '' }}>Kotak (Boxed)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- Submit buttons -->
             <div style="display: flex; justify-content: flex-end; gap: 15px;">
                 <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Batal</a>
