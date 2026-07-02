@@ -32,6 +32,10 @@ class PostController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('is_slider') && $request->is_slider == '1') {
+            $query->where('is_slider', true);
+        }
+
         $posts = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         $categories = Category::all();
 
@@ -82,6 +86,7 @@ class PostController extends Controller
             'featured_image' => $imagePath,
             'status' => $request->status,
             'published_at' => $publishedAt,
+            'is_slider' => $request->has('is_slider'),
         ]);
 
         ActivityLog::create([
@@ -148,6 +153,7 @@ class PostController extends Controller
             'featured_image' => $imagePath,
             'status' => $request->status,
             'published_at' => $publishedAt,
+            'is_slider' => $request->has('is_slider'),
         ]);
 
         ActivityLog::create([

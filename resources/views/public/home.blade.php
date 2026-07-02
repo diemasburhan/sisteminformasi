@@ -2,6 +2,23 @@
 
 @section('title', 'Sistem Informasi LPKIA - Unggul & Profesional')
 
+@section('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<style>
+    .swiper-container {
+        width: 100%;
+        padding-bottom: 50px;
+    }
+    .swiper-slide {
+        display: flex;
+        height: auto;
+    }
+    .swiper-pagination-bullet-active {
+        background: var(--primary);
+    }
+</style>
+@endsection
+
 @section('content')
 
     <!-- Hero Section -->
@@ -269,42 +286,100 @@
     <section class="content-section" id="berita" style="background-color: var(--bg-light); border-top: 1px solid var(--border-color);">
         <div class="container">
             <h2 class="section-title">Berita & Pengumuman Terbaru</h2>
-            <div class="grid-3-col">
-                @forelse($posts as $post)
-                    <article class="post-card">
-                        @if($post->featured_image)
-                            <img src="{{ asset($post->featured_image) }}" alt="{{ $post->title }}" class="post-card-img">
-                        @else
-                            <div class="post-card-img" style="display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.25);">
-                                <i class="fa-solid fa-image fa-3x"></i>
-                                <span class="post-card-category">{{ $post->category->name }}</span>
+
+            @if(isset($sliderPosts) && count($sliderPosts) > 0)
+                <div class="swiper-container mySwiper" style="overflow: hidden; position: relative;">
+                    <div class="swiper-wrapper">
+                        @foreach($sliderPosts as $post)
+                            <div class="swiper-slide">
+                                <article class="post-card" style="width: 100%; margin-bottom: 0;">
+                                    @if($post->featured_image)
+                                        <img src="{{ asset($post->featured_image) }}" alt="{{ $post->title }}" class="post-card-img">
+                                    @else
+                                        <div class="post-card-img" style="display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.25);">
+                                            <i class="fa-solid fa-image fa-3x"></i>
+                                            <span class="post-card-category">{{ $post->category->name }}</span>
+                                        </div>
+                                    @endif
+                                    <div class="post-card-body">
+                                        <div class="post-card-meta">
+                                            <span><i class="fa-solid fa-calendar-days"></i> {{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}</span>
+                                            <span><i class="fa-solid fa-user"></i> {{ $post->author->name }}</span>
+                                        </div>
+                                        <h3 class="post-card-title">{{ \Illuminate\Support\Str::limit($post->title, 55) }}</h3>
+                                        <p class="post-card-excerpt">{!! \Illuminate\Support\Str::limit(strip_tags($post->content), 120) !!}</p>
+                                        <a href="{{ route('public.post.show', $post->slug) }}" class="post-card-link">
+                                            Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </article>
                             </div>
-                        @endif
-                        <div class="post-card-body">
-                            <div class="post-card-meta">
-                                <span><i class="fa-solid fa-calendar-days"></i> {{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}</span>
-                                <span><i class="fa-solid fa-user"></i> {{ $post->author->name }}</span>
-                            </div>
-                            <h3 class="post-card-title">{{ \Illuminate\Support\Str::limit($post->title, 55) }}</h3>
-                            <p class="post-card-excerpt">{!! \Illuminate\Support\Str::limit(strip_tags($post->content), 120) !!}</p>
-                            <a href="{{ route('public.post.show', $post->slug) }}" class="post-card-link">
-                                Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                @empty
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
-                        <i class="fa-regular fa-folder-open fa-3x" style="margin-bottom: 15px; display: block;"></i>
-                        Belum ada berita yang diterbitkan saat ini.
+                        @endforeach
                     </div>
-                @endforelse
-            </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                </div>
+            @else
+                <div class="grid-3-col">
+                    @forelse($posts as $post)
+                        <article class="post-card">
+                            @if($post->featured_image)
+                                <img src="{{ asset($post->featured_image) }}" alt="{{ $post->title }}" class="post-card-img">
+                            @else
+                                <div class="post-card-img" style="display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.25);">
+                                    <i class="fa-solid fa-image fa-3x"></i>
+                                    <span class="post-card-category">{{ $post->category->name }}</span>
+                                </div>
+                            @endif
+                            <div class="post-card-body">
+                                <div class="post-card-meta">
+                                    <span><i class="fa-solid fa-calendar-days"></i> {{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}</span>
+                                    <span><i class="fa-solid fa-user"></i> {{ $post->author->name }}</span>
+                                </div>
+                                <h3 class="post-card-title">{{ \Illuminate\Support\Str::limit($post->title, 55) }}</h3>
+                                <p class="post-card-excerpt">{!! \Illuminate\Support\Str::limit(strip_tags($post->content), 120) !!}</p>
+                                <a href="{{ route('public.post.show', $post->slug) }}" class="post-card-link">
+                                    Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
+                    @empty
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+                            <i class="fa-regular fa-folder-open fa-3x" style="margin-bottom: 15px; display: block;"></i>
+                            Belum ada berita yang diterbitkan saat ini.
+                        </div>
+                    @endforelse
+                </div>
+            @endif
         </div>
     </section>
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script>
+    // Initialize Swiper
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2,
+            },
+            1024: {
+                slidesPerView: 3,
+            },
+        },
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+    });
+
     // Faculty Filter Logic
     function filterLecturers(category, button) {
         // Toggle Active Button

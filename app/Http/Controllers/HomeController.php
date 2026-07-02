@@ -25,6 +25,17 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
+        $sliderPosts = Post::where('status', 'published')
+            ->where('is_slider', true)
+            ->where(function($query) {
+                $query->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+            })
+            ->with(['category', 'author'])
+            ->orderBy('published_at', 'desc')
+            ->take(5)
+            ->get();
+
         $pages = Page::where('status', 'published')->get();
 
         // Load stats from Settings
@@ -41,7 +52,7 @@ class HomeController extends Controller
         $lecturers = Lecturer::orderBy('name', 'asc')->get();
         $orgMembers = OrgMember::orderBy('sort_order', 'asc')->get();
 
-        return view('public.home', compact('posts', 'pages', 'stats', 'lecturers', 'orgMembers'));
+        return view('public.home', compact('posts', 'pages', 'stats', 'lecturers', 'orgMembers', 'sliderPosts'));
     }
 
     public function post($slug)

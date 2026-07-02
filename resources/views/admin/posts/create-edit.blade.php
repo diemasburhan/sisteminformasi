@@ -84,6 +84,15 @@
                         <input type="datetime-local" name="published_at" id="publishedAt" class="form-control" value="{{ isset($post) && $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : '' }}">
                     </div>
 
+                    <!-- Is Slider Checkbox -->
+                    <div class="form-group" style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; font-size: 0.95rem;">
+                            <input type="checkbox" name="is_slider" value="1" {{ old('is_slider', $post->is_slider ?? false) ? 'checked' : '' }} style="margin-right: 10px; width: 18px; height: 18px;">
+                            <strong>Tampilkan di Slider Utama</strong>
+                        </label>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Centang ini untuk menampilkan postingan ini di slider halaman utama (direkomendasikan memiliki Gambar Utama).</p>
+                    </div>
+
                     <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
                             <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Konten

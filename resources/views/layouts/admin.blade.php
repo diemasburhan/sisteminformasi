@@ -37,8 +37,11 @@
                         <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
                     </a>
                     <ul class="admin-submenu" id="postsSubmenu" style="display: {{ Request::is('admin/posts*') ? 'block' : 'none' }};">
-                        <li class="admin-submenu-item {{ Route::is('admin.posts.index') ? 'active' : '' }}">
+                        <li class="admin-submenu-item {{ Route::is('admin.posts.index') && !request('is_slider') ? 'active' : '' }}">
                             <a href="{{ route('admin.posts.index') }}" class="admin-submenu-link"><i class="fa-solid fa-list"></i> All Posts</a>
+                        </li>
+                        <li class="admin-submenu-item {{ request('is_slider') == '1' ? 'active' : '' }}">
+                            <a href="{{ route('admin.posts.index', ['is_slider' => 1]) }}" class="admin-submenu-link"><i class="fa-solid fa-images"></i> Slider Berita</a>
                         </li>
                         <li class="admin-submenu-item {{ Route::is('admin.posts.create') ? 'active' : '' }}">
                             <a href="{{ route('admin.posts.create') }}" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Add New</a>

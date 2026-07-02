@@ -15,11 +15,13 @@ class Post extends Model
         'content',
         'featured_image',
         'status',
-        'published_at'
+        'published_at',
+        'is_slider'
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'is_slider' => 'boolean',
     ];
 
     public function category()
