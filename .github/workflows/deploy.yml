@@ -7,13 +7,44 @@ on:
 
 jobs:
   deploy:
+    # Opsi 1: Jika menggunakan GitHub Actions Self-Hosted Runner di server target
     runs-on: self-hosted
 
+    # Opsi 2: Jika menggunakan GitHub Cloud Runner via SSH
+    # runs-on: ubuntu-latest
+
     steps:
-      - name: Deploy to Local Server
+      - name: Deploying Application
         run: |
           cd /var/www/lpkia/sisteminformasi
-          git pull origin main
+          
+          # Tandai direktori aman untuk Git
+          git config --global --add safe.directory /var/www/lpkia/sisteminformasi || true
+          
+          # Tarik kode terbaru dari branch main
+          git fetch origin main
+          git reset --hard origin/main
+          
+          # Opsional: Install dependency composer tanpa dev
+          # composer install --no-dev --optimize-autoloader --no-interaction
+          
+          # Mode maintenance & migrasi database
+          # php artisan down || true
+          # php artisan migrate --force
+          
+          # Bersihkan dan buat ulang cache produksi Laravel
           php artisan config:clear
           php artisan cache:clear
+          php artisan route:clear
           php artisan view:clear
+          
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          
+          # Pastikan link storage tersedia dan izin folder sesuai
+          php artisan storage:link || true
+          # php artisan up
+          
+          chmod -R 775 storage bootstrap/cache database || true
+
