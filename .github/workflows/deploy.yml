@@ -7,18 +7,13 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Executing remote SSH commands
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd /var/www/lpkia/sisteminformasi
-            git pull origin main
-            php artisan config:clear
-            php artisan cache:clear
-            php artisan view:clear
+      - name: Deploy to Local Server
+        run: |
+          cd /var/www/lpkia/sisteminformasi
+          git pull origin main
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan view:clear
