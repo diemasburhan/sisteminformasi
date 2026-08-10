@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\LecturerController;
 use App\Http\Controllers\Admin\OrgMemberController;
+use App\Http\Controllers\Admin\ExpertiseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     
     // Lecturers CMS
     Route::resource('lecturers', LecturerController::class, ['as' => 'admin'])->except(['show']);
+    Route::resource('expertises', ExpertiseController::class, ['as' => 'admin'])->except(['show']);
 
     // Org Members CMS
     Route::resource('org-members', OrgMemberController::class, ['as' => 'admin'])->except(['show']);

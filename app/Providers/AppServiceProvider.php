@@ -19,12 +19,11 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
         
-        // Force HTTPS scheme when accessed through Nginx Reverse Proxy
-        if (config('app.env') !== 'local' || request()->server('HTTP_X_FORWARDED_PROTO') == 'https') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
-        } else {
-            // Also force it globally just in case since Nginx SSL is enabled
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+        // Force HTTPS scheme when accessed through Nginx Reverse Proxy over SSL
+        if (!app()->runningInConsole()) {
+            if (request()->server('HTTP_X_FORWARDED_PROTO') === 'https' || request()->header('X-Forwarded-Proto') === 'https') {
+                \Illuminate\Support\Facades\URL::forceScheme('https');
+            }
         }
     }
 

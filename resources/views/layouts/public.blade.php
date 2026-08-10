@@ -29,23 +29,39 @@
             </button>
 
             <nav class="nav-menu" id="navMenu">
-                <a href="{{ route('home') }}" class="nav-link {{ Route::is('home') ? 'active' : '' }}">Home</a>
-                
-                <!-- Dropdown Akademik -->
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-link" id="academicDropdownBtn">
-                        Akademik <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 2px;"></i>
-                    </a>
-                    <div class="dropdown-content">
-                        <a href="{{ route('home') }}#kurikulum"><i class="fa-solid fa-graduation-cap"></i> Kurikulum</a>
-                        <a href="{{ route('home') }}#jadwal"><i class="fa-solid fa-calendar-day"></i> Jadwal Kuliah</a>
-                        <a href="{{ route('home') }}#shortcut-menu"><i class="fa-solid fa-calendar-days"></i> Kalender Akademik</a>
-                    </div>
-                </div>
+                @php
+                    $navMenuJson = \App\Models\Setting::get('navigation_menu');
+                    $navMenuItems = $navMenuJson ? json_decode($navMenuJson, true) : [
+                        ["label" => "Home", "url" => "/", "children" => []],
+                        ["label" => "Akademik", "url" => "#", "children" => [
+                            ["label" => "Kurikulum", "url" => "/#kurikulum"],
+                            ["label" => "Jadwal Kuliah", "url" => "/#jadwal"],
+                            ["label" => "Kalender Akademik", "url" => "/#shortcut-menu"]
+                        ]],
+                        ["label" => "Profil Prodi", "url" => "/page/tentang-kami", "children" => []],
+                        ["label" => "Berita", "url" => "/berita", "children" => []],
+                        ["label" => "Kontak", "url" => "/page/kontak", "children" => []]
+                    ];
+                @endphp
 
-                <a href="{{ route('public.page.show', 'tentang-kami') }}" class="nav-link {{ Request::is('page/tentang-kami') ? 'active' : '' }}">Profil Prodi</a>
-                <a href="{{ route('public.posts') }}" class="nav-link {{ Route::is('public.posts') ? 'active' : '' }}">Berita</a>
-                <a href="{{ route('public.page.show', 'kontak') }}" class="nav-link {{ Request::is('page/kontak') ? 'active' : '' }}">Kontak</a>
+                @foreach($navMenuItems as $item)
+                    @if(isset($item['children']) && count($item['children']) > 0)
+                        <!-- Dropdown Menu -->
+                        <div class="nav-dropdown">
+                            <a href="#" class="nav-link">
+                                {{ $item['label'] }} <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 2px;"></i>
+                            </a>
+                            <div class="dropdown-content">
+                                @foreach($item['children'] as $child)
+                                    <a href="{{ $child['url'] }}">{{ $child['label'] }}</a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <!-- Regular Link -->
+                        <a href="{{ $item['url'] }}" class="nav-link {{ Request::url() == url($item['url']) || Request::is(trim($item['url'], '/')) ? 'active' : '' }}">{{ $item['label'] }}</a>
+                    @endif
+                @endforeach
                 
                 @auth
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-sm">

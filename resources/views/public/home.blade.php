@@ -22,21 +22,56 @@
 @section('content')
 
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container hero-grid">
-            <div class="hero-content">
-                <h2 style="color: #ffffff;">Sistem Informasi IDE & LPKIA</h2>
-                <p>Menciptakan Profesional IT Global di Bidang Tata Kelola & Analitik Data. Menghasilkan lulusan yang siap bersaing dalam era ekonomi digital dengan kurikulum berbasis industri.</p>
+    <section class="hero-section" style="position: relative; overflow: hidden; padding: 120px 0; background: none;">
+        @php
+            $heroImagesRaw = \App\Models\Setting::get('home_hero_images', json_encode(['images/tech_hero.png']));
+            $heroImages = json_decode($heroImagesRaw, true);
+            if (!is_array($heroImages) || empty($heroImages)) {
+                $heroImages = ['images/tech_hero.png'];
+            }
+        @endphp
+
+        <!-- Background Image Slider -->
+        <div class="hero-slider-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden;">
+            <div class="hero-slider" style="width: 100%; height: 100%; display: flex; transition: transform 0.5s ease-in-out;">
+                @foreach($heroImages as $img)
+                    <div class="slide" style="min-width: 100%; height: 100%; flex-shrink: 0;">
+                        <img src="{{ asset($img) }}" alt="Sistem Informasi LPKIA" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                @endforeach
+            </div>
+            <!-- Overlay to ensure text readability -->
+            <div class="hero-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.75) 100%);"></div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="container" style="position: relative; z-index: 2;">
+            <div class="hero-content" style="max-width: 800px;">
+                <h2 style="color: #ffffff; font-size: 3rem; font-weight: 800; line-height: 1.25; margin-bottom: 25px;">{{ \App\Models\Setting::get('home_hero_title', 'Sistem Informasi LPKIA') }}</h2>
+                <p style="font-size: 1.15rem; color: rgba(255,255,255,0.9); margin-bottom: 35px; line-height: 1.7;">{{ \App\Models\Setting::get('home_hero_text', 'Menciptakan Profesional IT Global di Bidang Tata Kelola & Analitik Data. Menghasilkan lulusan yang siap bersaing dalam era ekonomi digital dengan kurikulum berbasis industri.') }}</p>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <a href="#kurikulum" class="btn btn-secondary">
                         <i class="fa-solid fa-graduation-cap"></i> Lihat Kurikulum
                     </a>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="{{ asset('images/tech_hero.png') }}" alt="Sistem Informasi Teknologi LPKIA" style="width: 100%; max-height: 380px; object-fit: cover; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); transition: var(--transition);">
-            </div>
         </div>
+
+        <!-- Navigation Dots -->
+        @if(count($heroImages) > 1)
+            <style>
+                .slider-dots .dot.active {
+                    background-color: #ffffff !important;
+                    transform: scale(1.2);
+                    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+                }
+            </style>
+            <div class="slider-dots" style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 3;">
+                @foreach($heroImages as $idx => $img)
+                    <span class="dot {{ $idx === 0 ? 'active' : '' }}" data-index="{{ $idx }}" style="width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s ease;"></span>
+                @endforeach
+            </div>
+        @endif
     </section>
 
     <!-- Shortcut Menu Section -->
@@ -147,16 +182,36 @@
             <!-- Lecturers Grid -->
             <div class="lecturer-grid" id="lecturerGrid">
                 @forelse($lecturers as $lecturer)
-                    <div class="lecturer-card" data-expert="{{ $lecturer->expertise }}">
+                    @php
+                        $categories = $lecturer->expertises->pluck('category')->map(function($c) { return strtolower($c); })->toArray();
+                        $dataExpert = implode(',', $categories);
+                        
+                        $firstCategory = count($categories) > 0 ? $categories[0] : 'other';
+                        $expertColor = $firstCategory === 'dev' ? 'var(--secondary)' : ($firstCategory === 'data' ? 'var(--success)' : 'var(--primary)');
+                    @endphp
+                    <div class="lecturer-card" data-expert="{{ $dataExpert }}">
                         @if($lecturer->photo)
                             <img src="{{ asset($lecturer->photo) }}" alt="{{ $lecturer->name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; display: inline-block; border: 2px solid var(--border-color);">
                         @else
-                            <i class="fa-solid fa-user-circle fa-4x" style="color: {{ $lecturer->expertise === 'dev' ? 'var(--secondary)' : ($lecturer->expertise === 'data' ? 'var(--success)' : 'var(--primary)') }}; margin-bottom: 15px; display: block;"></i>
+                            <i class="fa-solid fa-user-circle fa-4x" style="color: {{ $expertColor }}; margin-bottom: 15px; display: block;"></i>
                         @endif
                         <h4>{{ $lecturer->name }}</h4>
-                        <span class="field">
-                            {{ $lecturer->expertise === 'data' ? 'Data Science' : ($lecturer->expertise === 'dev' ? 'Software Engineering' : 'IT Governance') }}
-                        </span>
+                        
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 8px;">
+                            @forelse($lecturer->expertises as $exp)
+                                @php
+                                    $expCat = strtolower($exp->category);
+                                    $color = $expCat === 'dev' ? 'var(--secondary)' : ($expCat === 'data' ? 'var(--success)' : 'var(--primary)');
+                                @endphp
+                                <span class="badge" style="background-color: {{ $color }}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                    {{ $exp->name }}
+                                </span>
+                            @empty
+                                <span class="badge" style="background-color: var(--text-light); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; display: inline-block;">
+                                    Umum
+                                </span>
+                            @endforelse
+                        </div>
                     </div>
                 @empty
                     <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px;">
@@ -240,41 +295,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td style="font-weight: 700; color: var(--primary);">Senin</td>
-                                <td>08:00 - 10:30</td>
-                                <td style="font-weight: 600;">Big Data Analytics</td>
-                                <td>Hesti Lestari, M.C.S.</td>
-                                <td><span class="badge badge-success" style="font-size: 0.8rem; border-radius: 4px;">Lab Komputer 3</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: 700; color: var(--primary);">Selasa</td>
-                                <td>10:40 - 13:10</td>
-                                <td style="font-weight: 600;">IT Governance & Audit</td>
-                                <td>Dr. Ahmad Sudrajat, M.T.</td>
-                                <td><span class="badge badge-secondary" style="font-size: 0.8rem; border-radius: 4px;">Ruang 402</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: 700; color: var(--primary);">Rabu</td>
-                                <td>13:30 - 16:00</td>
-                                <td style="font-weight: 600;">Rekayasa Perangkat Lunak</td>
-                                <td>Rina Wijaya, M.Kom.</td>
-                                <td><span class="badge badge-secondary" style="font-size: 0.8rem; border-radius: 4px;">Ruang 305</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: 700; color: var(--primary);">Kamis</td>
-                                <td>08:00 - 10:30</td>
-                                <td style="font-weight: 600;">Pemrograman Web Lanjut</td>
-                                <td>Yusuf Mansur, M.T.</td>
-                                <td><span class="badge badge-success" style="font-size: 0.8rem; border-radius: 4px;">Lab Komputer 1</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: 700; color: var(--primary);">Jumat</td>
-                                <td>10:00 - 12:30</td>
-                                <td style="font-weight: 600;">Cloud Computing</td>
-                                <td>Budi Pratama, M.T.I.</td>
-                                <td><span class="badge badge-success" style="font-size: 0.8rem; border-radius: 4px;">Lab Komputer 2</span></td>
-                            </tr>
+                            @php
+                                $scheduleJson = \App\Models\Setting::get('class_schedule');
+                                $schedules = $scheduleJson ? json_decode($scheduleJson, true) : [
+                                    ["hari" => "Senin", "jam" => "08:00 - 10:30", "matkul" => "Big Data Analytics", "dosen" => "Hesti Lestari, M.C.S.", "ruangan" => "Lab Komputer 3"],
+                                    ["hari" => "Selasa", "jam" => "10:40 - 13:10", "matkul" => "IT Governance & Audit", "dosen" => "Dr. Ahmad Sudrajat, M.T.", "ruangan" => "Ruang 402"],
+                                    ["hari" => "Rabu", "jam" => "13:30 - 16:00", "matkul" => "Rekayasa Perangkat Lunak", "dosen" => "Rina Wijaya, M.Kom.", "ruangan" => "Ruang 305"],
+                                    ["hari" => "Kamis", "jam" => "08:00 - 10:30", "matkul" => "Pemrograman Web Lanjut", "dosen" => "Yusuf Mansur, M.T.", "ruangan" => "Lab Komputer 1"],
+                                    ["hari" => "Jumat", "jam" => "10:00 - 12:30", "matkul" => "Cloud Computing", "dosen" => "Budi Pratama, M.T.I.", "ruangan" => "Lab Komputer 2"]
+                                ];
+                            @endphp
+
+                            @forelse($schedules as $sched)
+                                <tr>
+                                    <td style="font-weight: 700; color: var(--primary);">{{ $sched['hari'] }}</td>
+                                    <td>{{ $sched['jam'] }}</td>
+                                    <td style="font-weight: 600;">{{ $sched['matkul'] }}</td>
+                                    <td>{{ $sched['dosen'] }}</td>
+                                    <td>
+                                        <span class="badge {{ strpos(strtolower($sched['ruangan']), 'lab') !== false ? 'badge-success' : 'badge-secondary' }}" style="font-size: 0.8rem; border-radius: 4px;">
+                                            {{ $sched['ruangan'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 15px;">Jadwal perkuliahan belum ditambahkan.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -390,8 +438,9 @@
         // Toggle Cards Visibility
         const cards = document.querySelectorAll('#lecturerGrid .lecturer-card');
         cards.forEach(card => {
-            const expertType = card.getAttribute('data-expert');
-            if (category === 'all' || expertType === category) {
+            const expertType = card.getAttribute('data-expert') || '';
+            const categories = expertType.split(',');
+            if (category === 'all' || categories.includes(category)) {
                 card.style.display = 'block';
                 // Add minor fade animation
                 card.style.opacity = '0';
@@ -404,5 +453,57 @@
             }
         });
     }
+
+    // Hero Slider Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.querySelector('.hero-slider');
+        const slides = document.querySelectorAll('.hero-slider .slide');
+        const dots = document.querySelectorAll('.slider-dots .dot');
+        
+        if (slider && slides.length > 1) {
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+            let slideInterval;
+
+            function goToSlide(index) {
+                currentSlide = index;
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Update dots active class
+                dots.forEach((dot, idx) => {
+                    if (idx === currentSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+
+            function nextSlide() {
+                goToSlide((currentSlide + 1) % totalSlides);
+            }
+
+            const intervalTime = {{ (int) \App\Models\Setting::get('home_hero_slider_interval', 5) * 1000 }};
+            function startSlideShow() {
+                slideInterval = setInterval(nextSlide, intervalTime);
+            }
+
+            function stopSlideShow() {
+                clearInterval(slideInterval);
+            }
+
+            // Click dots behavior
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => {
+                    stopSlideShow();
+                    goToSlide(idx);
+                    startSlideShow();
+                });
+            });
+
+            // Initialize automatic playback
+            startSlideShow();
+        }
+    });
 </script>
 @endsection

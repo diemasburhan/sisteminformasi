@@ -21,9 +21,16 @@
                 
                 <select name="expertise" class="form-control" style="width: 220px; height: 38px; padding: 6px 12px; font-size: 0.85rem;" onchange="this.form.submit()">
                     <option value="">Semua Bidang Keahlian</option>
-                    <option value="data" {{ request('expertise') === 'data' ? 'selected' : '' }}>Data Science & Analytics</option>
-                    <option value="dev" {{ request('expertise') === 'dev' ? 'selected' : '' }}>Software Engineering</option>
-                    <option value="gov" {{ request('expertise') === 'gov' ? 'selected' : '' }}>IT Governance</option>
+                    <optgroup label="Kategori Utama">
+                        <option value="dev" {{ request('expertise') === 'dev' ? 'selected' : '' }}>Software Engineering (dev)</option>
+                        <option value="data" {{ request('expertise') === 'data' ? 'selected' : '' }}>Data Science & Analytics (data)</option>
+                        <option value="gov" {{ request('expertise') === 'gov' ? 'selected' : '' }}>IT Governance (gov)</option>
+                    </optgroup>
+                    <optgroup label="Bidang Keahlian Spesifik">
+                        @foreach($allExpertises as $exp)
+                            <option value="{{ $exp->id }}" {{ request('expertise') == $exp->id ? 'selected' : '' }}>{{ $exp->name }}</option>
+                        @endforeach
+                    </optgroup>
                 </select>
 
                 @if(request('search') || request('expertise'))
@@ -63,13 +70,21 @@
                                 </a>
                             </td>
                             <td>
-                                @if($lecturer->expertise === 'data')
-                                    <span class="badge" style="background-color: #D1FAE5; color: #065F46;"><i class="fa-solid fa-chart-line"></i> Data Science & Analytics</span>
-                                @elseif($lecturer->expertise === 'dev')
-                                    <span class="badge" style="background-color: #DBEAFE; color: #1E40AF;"><i class="fa-solid fa-code"></i> Software Engineering</span>
-                                @else
-                                    <span class="badge" style="background-color: #F5E6FF; color: #7C3AED;"><i class="fa-solid fa-shield-halved"></i> IT Governance</span>
-                                @endif
+                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                    @forelse($lecturer->expertises as $exp)
+                                        @if($exp->category === 'data')
+                                            <span class="badge" style="background-color: #D1FAE5; color: #065F46; padding: 4px 8px; border-radius: 4px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-chart-line"></i> {{ $exp->name }}</span>
+                                        @elseif($exp->category === 'dev')
+                                            <span class="badge" style="background-color: #DBEAFE; color: #1E40AF; padding: 4px 8px; border-radius: 4px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-code"></i> {{ $exp->name }}</span>
+                                        @elseif($exp->category === 'gov')
+                                            <span class="badge" style="background-color: #F5E6FF; color: #7C3AED; padding: 4px 8px; border-radius: 4px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-shield-halved"></i> {{ $exp->name }}</span>
+                                        @else
+                                            <span class="badge" style="background-color: #F3F4F6; color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-tag"></i> {{ $exp->name }}</span>
+                                        @endif
+                                    @empty
+                                        <span class="badge" style="background-color: #FFF3CD; color: #856404; padding: 4px 8px; border-radius: 4px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-triangle-exclamation"></i> Belum ada</span>
+                                    @endforelse
+                                </div>
                             </td>
                             <td style="font-size: 0.82rem; color: var(--text-muted);">
                                 {{ $lecturer->created_at->format('d M Y') }}

@@ -1,10 +1,15 @@
-@extends('layouts.admin')
-
-@section('title', 'Pengaturan Situs - Admin LPKIA')
-@section('page_title', 'Pengaturan Umum & Statistik')
-
-@section('styles')
-<style>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- CSRF Token for AJAX Auto-save -->
+    <meta name="csrf-token" content="">
+    <title>Pengaturan Situs - Admin LPKIA</title>
+    <link rel="stylesheet" href="https://sisteminformasi.lpkia.ac.id/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
     /* Tab Buttons Styling */
     .settings-tab-nav {
         display: flex;
@@ -53,7 +58,7 @@
         display: block;
     }
 
-    @keyframes fadeIn {
+    @keyframes  fadeIn {
         from { opacity: 0; transform: translateY(8px); }
         to { opacity: 1; transform: translateY(0); }
     }
@@ -188,12 +193,168 @@
         transform: scale(1.15);
     }
 </style>
-@endsection
+</head>
+<body class="theme-modern layout-full-width">
 
-@section('content')
-    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <a href="https://sisteminformasi.lpkia.ac.id/admin/dashboard" class="admin-sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap" style="color: var(--secondary)"></i>
+                    <span>ADMIN<span>LPKIA</span></span>
+                </a>
+            </div>
+
+            <ul class="admin-sidebar-menu">
+                <li class="admin-menu-item ">
+                    <a href="https://sisteminformasi.lpkia.ac.id/admin/dashboard" class="admin-menu-link">
+                        <i class="fa-solid fa-gauge"></i> Dashboard
+                    </a>
+                </li>
+                
+                <!-- Posts Submenu -->
+                <li class="admin-menu-item ">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('postsSubmenu', event)">
+                        <i class="fa-solid fa-file-lines"></i> Posts 
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="postsSubmenu" style="display: none;">
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/posts" class="admin-submenu-link"><i class="fa-solid fa-list"></i> All Posts</a>
+                        </li>
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/posts/create" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Add New</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Pages Submenu -->
+                <li class="admin-menu-item ">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('pagesSubmenu', event)">
+                        <i class="fa-solid fa-newspaper"></i> Pages 
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="pagesSubmenu" style="display: none;">
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/pages" class="admin-submenu-link"><i class="fa-solid fa-list"></i> All Pages</a>
+                        </li>
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/pages/create" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Add New</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Lecturers Submenu -->
+                <li class="admin-menu-item ">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('lecturersSubmenu', event)">
+                        <i class="fa-solid fa-graduation-cap"></i> Dosen Pengajar
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="lecturersSubmenu" style="display: none;">
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/lecturers" class="admin-submenu-link"><i class="fa-solid fa-list"></i> Semua Dosen</a>
+                        </li>
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/lecturers/create" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Tambah Baru</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Org Members Submenu -->
+                <li class="admin-menu-item ">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('orgMembersSubmenu', event)">
+                        <i class="fa-solid fa-sitemap"></i> Struktur Organisasi
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="orgMembersSubmenu" style="display: none;">
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/org-members" class="admin-submenu-link"><i class="fa-solid fa-list"></i> Anggota Struktur</a>
+                        </li>
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/org-members/create" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Tambah Anggota</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Jadwal Kelas -->
+                <li class="admin-menu-item ">
+                    <a href="https://sisteminformasi.lpkia.ac.id/admin/settings?tab=tab-schedule" class="admin-menu-link">
+                        <i class="fa-solid fa-calendar-days"></i> Jadwal Kelas
+                    </a>
+                </li>
+
+                <!-- Appearance Submenu (Tampilan) -->
+                <li class="admin-menu-item ">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('appearanceSubmenu', event)">
+                        <i class="fa-solid fa-palette"></i> Tampilan
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="appearanceSubmenu" style="display: none;">
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/settings?tab=tab-hero" class="admin-submenu-link">
+                                <i class="fa-solid fa-desktop"></i> Customizer Beranda
+                            </a>
+                        </li>
+                        <li class="admin-submenu-item ">
+                            <a href="https://sisteminformasi.lpkia.ac.id/admin/settings?tab=tab-menu" class="admin-submenu-link">
+                                <i class="fa-solid fa-compass"></i> Menu Navigasi
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Media Library -->
+                <li class="admin-menu-item">
+                    <a href="#" class="admin-menu-link" onclick="showToast('Fitur Library Media tersedia dalam versi integrasi lengkap cloud.', 'info')">
+                        <i class="fa-solid fa-images"></i> Media Library
+                    </a>
+                </li>
+
+                <!-- Settings -->
+                <li class="admin-menu-item ">
+                    <a href="https://sisteminformasi.lpkia.ac.id/admin/settings?tab=tab-general" class="admin-menu-link">
+                        <i class="fa-solid fa-gears"></i> Settings
+                    </a>
+                </li>
+            </ul>
+
+            <div class="admin-sidebar-footer">
+                <span>Versi 1.0.0</span>
+                <a href="https://sisteminformasi.lpkia.ac.id" target="_blank" style="color: var(--secondary-light); font-weight: 600;"><i class="fa-solid fa-globe"></i> Lihat Situs</a>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <div class="admin-main">
+            <!-- Navbar -->
+            <header class="admin-navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="menu-toggle" id="adminSidebarToggle" style="color: var(--text-dark); display: none;">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="admin-navbar-title">Pengaturan Umum &amp; Statistik</h2>
+                </div>
+                
+                <div class="admin-navbar-user">
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">Administrator LPKIA</div>
+                        <div class="admin-user-role">Admin</div>
+                    </div>
+                    
+                    <form action="https://sisteminformasi.lpkia.ac.id/logout" method="POST" style="margin-left: 10px;">
+                        <input type="hidden" name="_token" value="">                        <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                </div>
+            </header>
+
+            <!-- Inner Page Content -->
+            <div class="admin-content-wrapper">
+                
+                
+                    <form action="https://sisteminformasi.lpkia.ac.id/admin/settings" method="POST">
+        <input type="hidden" name="_token" value="">        
         <!-- Tabs Navigation -->
         <div class="settings-tab-nav">
             <button type="button" class="tab-btn active" onclick="switchTab(event, 'tab-general')">
@@ -226,28 +387,28 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="form-group">
                         <label class="form-label" for="site_name">Nama Situs</label>
-                        <input type="text" name="site_name" id="site_name" class="form-control" value="{{ old('site_name', $settings['site_name']) }}" placeholder="Contoh: Portal LPKIA" required>
+                        <input type="text" name="site_name" id="site_name" class="form-control" value="Portal LPKIA" placeholder="Contoh: Portal LPKIA" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="site_tagline">Slogan (Tagline)</label>
-                        <input type="text" name="site_tagline" id="site_tagline" class="form-control" value="{{ old('site_tagline', $settings['site_tagline']) }}" placeholder="Contoh: Sistem Informasi Digital LPKIA">
+                        <input type="text" name="site_tagline" id="site_tagline" class="form-control" value="Sistem Informasi Digital &amp; Kemahasiswaan LPKIA" placeholder="Contoh: Sistem Informasi Digital LPKIA">
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
                     <div class="form-group">
                         <label class="form-label" for="site_phone">Telepon Kampus</label>
-                        <input type="text" name="site_phone" id="site_phone" class="form-control" value="{{ old('site_phone', $settings['site_phone']) }}" placeholder="Contoh: (022) 7564200">
+                        <input type="text" name="site_phone" id="site_phone" class="form-control" value="(022) 7564200" placeholder="Contoh: (022) 7564200">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="site_email">Email Layanan</label>
-                        <input type="email" name="site_email" id="site_email" class="form-control" value="{{ old('site_email', $settings['site_email']) }}" placeholder="Contoh: info@lpkia.ac.id">
+                        <input type="email" name="site_email" id="site_email" class="form-control" value="info@lpkia.ac.id" placeholder="Contoh: info@lpkia.ac.id">
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label class="form-label" for="site_address">Alamat Lengkap</label>
-                    <textarea name="site_address" id="site_address" rows="3" class="form-control" style="resize: vertical;" placeholder="Contoh: Jl. Soekarno-Hatta No. 456, Bandung">{{ old('site_address', $settings['site_address']) }}</textarea>
+                    <textarea name="site_address" id="site_address" rows="3" class="form-control" style="resize: vertical;" placeholder="Contoh: Jl. Soekarno-Hatta No. 456, Bandung">Jl. Soekarno-Hatta No. 456, Bandung, Jawa Barat</textarea>
                 </div>
             </div>
 
@@ -261,17 +422,17 @@
                     <div class="form-group">
                         <label class="form-label" for="theme_color">Tema Warna Utama</label>
                         <select name="theme_color" id="theme_color" class="form-control">
-                            <option value="default" {{ old('theme_color', $settings['theme_color']) == 'default' ? 'selected' : '' }}>Standar (Default LPKIA)</option>
-                            <option value="minimalist" {{ old('theme_color', $settings['theme_color']) == 'minimalist' ? 'selected' : '' }}>Minimalis (Bersih & Flat)</option>
-                            <option value="modern" {{ old('theme_color', $settings['theme_color']) == 'modern' ? 'selected' : '' }}>Modern Corporate (Glassmorphism & Soft Shadow)</option>
+                            <option value="default" >Standar (Default LPKIA)</option>
+                            <option value="minimalist" >Minimalis (Bersih & Flat)</option>
+                            <option value="modern" selected>Modern Corporate (Glassmorphism & Soft Shadow)</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="layout_style">Gaya Layout Website</label>
                         <select name="layout_style" id="layout_style" class="form-control">
-                            <option value="full-width" {{ old('layout_style', $settings['layout_style']) == 'full-width' ? 'selected' : '' }}>Lebar Penuh (Full-width)</option>
-                            <option value="boxed" {{ old('layout_style', $settings['layout_style']) == 'boxed' ? 'selected' : '' }}>Kotak Terpusat (Boxed)</option>
+                            <option value="full-width" selected>Lebar Penuh (Full-width)</option>
+                            <option value="boxed" >Kotak Terpusat (Boxed)</option>
                         </select>
                     </div>
                 </div>
@@ -291,19 +452,19 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                     <div class="form-group">
                         <label class="form-label" for="stats_total_students">Total Mahasiswa</label>
-                        <input type="number" name="stats_total_students" id="stats_total_students" class="form-control" value="{{ old('stats_total_students', $settings['stats_total_students']) }}" required>
+                        <input type="number" name="stats_total_students" id="stats_total_students" class="form-control" value="2450" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="stats_active_students">Mahasiswa Aktif</label>
-                        <input type="number" name="stats_active_students" id="stats_active_students" class="form-control" value="{{ old('stats_active_students', $settings['stats_active_students']) }}" required>
+                        <input type="number" name="stats_active_students" id="stats_active_students" class="form-control" value="2180" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="stats_graduates">Alumni Terdaftar</label>
-                        <input type="number" name="stats_graduates" id="stats_graduates" class="form-control" value="{{ old('stats_graduates', $settings['stats_graduates']) }}" required>
+                        <input type="number" name="stats_graduates" id="stats_graduates" class="form-control" value="12800" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="stats_employment_rate">Tingkat Serapan Kerja</label>
-                        <input type="text" name="stats_employment_rate" id="stats_employment_rate" class="form-control" value="{{ old('stats_employment_rate', $settings['stats_employment_rate']) }}" placeholder="Contoh: 96%" required>
+                        <input type="text" name="stats_employment_rate" id="stats_employment_rate" class="form-control" value="94%" placeholder="Contoh: 96%" required>
                     </div>
                 </div>
             </div>
@@ -321,31 +482,22 @@
 
                 <div class="form-group">
                     <label class="form-label" for="stats_majors_data">Data Program Studi JSON</label>
-                    <textarea name="stats_majors_data" id="stats_majors_data" rows="5" class="form-control json-editor" required>{{ old('stats_majors_data', $settings['stats_majors_data']) }}</textarea>
+                    <textarea name="stats_majors_data" id="stats_majors_data" rows="5" class="form-control json-editor" required>[{&quot;name&quot;:&quot;Informatika&quot;,&quot;students&quot;:650,&quot;color&quot;:&quot;#0088ff&quot;},{&quot;name&quot;:&quot;Sistem Informasi&quot;,&quot;students&quot;:520,&quot;color&quot;:&quot;#7c3aed&quot;},{&quot;name&quot;:&quot;Teknik Komputer&quot;,&quot;students&quot;:310,&quot;color&quot;:&quot;#4F46E5&quot;},{&quot;name&quot;:&quot;Komputerisasi Akuntansi&quot;,&quot;students&quot;:420,&quot;color&quot;:&quot;#10B981&quot;},{&quot;name&quot;:&quot;Administrasi Bisnis&quot;,&quot;students&quot;:550,&quot;color&quot;:&quot;#EC4899&quot;}]</textarea>
                     <span style="font-size: 0.78rem; color: var(--text-light); margin-top: 5px; display: block;">Format yang disarankan: <code>[{"label": "Sistem Informasi", "value": 150}, ...]</code></span>
-                    @error('stats_majors_data')
-                        <span style="font-size: 0.75rem; color: var(--danger); display: block; margin-top: 5px;">{{ $message }}</span>
-                    @enderror
-                </div>
+                                    </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px;">
                     <div class="form-group">
                         <label class="form-label" for="stats_gender_data">Rasio Gender JSON</label>
-                        <textarea name="stats_gender_data" id="stats_gender_data" rows="5" class="form-control json-editor" required>{{ old('stats_gender_data', $settings['stats_gender_data']) }}</textarea>
+                        <textarea name="stats_gender_data" id="stats_gender_data" rows="5" class="form-control json-editor" required>[{&quot;label&quot;:&quot;Laki-laki&quot;,&quot;value&quot;:1420,&quot;color&quot;:&quot;#0088ff&quot;},{&quot;label&quot;:&quot;Perempuan&quot;,&quot;value&quot;:1030,&quot;color&quot;:&quot;#7c3aed&quot;}]</textarea>
                         <span style="font-size: 0.78rem; color: var(--text-light); margin-top: 5px; display: block;">Format: <code>[{"label": "Laki-laki", "value": 60}, {"label": "Perempuan", "value": 40}]</code></span>
-                        @error('stats_gender_data')
-                            <span style="font-size: 0.75rem; color: var(--danger); display: block; margin-top: 5px;">{{ $message }}</span>
-                        @enderror
-                    </div>
+                                            </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="stats_yearly_enrollment">Grafik Pendaftaran Tahunan JSON</label>
-                        <textarea name="stats_yearly_enrollment" id="stats_yearly_enrollment" rows="5" class="form-control json-editor" required>{{ old('stats_yearly_enrollment', $settings['stats_yearly_enrollment']) }}</textarea>
+                        <textarea name="stats_yearly_enrollment" id="stats_yearly_enrollment" rows="5" class="form-control json-editor" required>[{&quot;year&quot;:&quot;2022&quot;,&quot;students&quot;:510},{&quot;year&quot;:&quot;2023&quot;,&quot;students&quot;:580},{&quot;year&quot;:&quot;2024&quot;,&quot;students&quot;:620},{&quot;year&quot;:&quot;2025&quot;,&quot;students&quot;:680},{&quot;year&quot;:&quot;2026&quot;,&quot;students&quot;:740}]</textarea>
                         <span style="font-size: 0.78rem; color: var(--text-light); margin-top: 5px; display: block;">Format: <code>[{"year": "2024", "count": 120}, ...]</code></span>
-                        @error('stats_yearly_enrollment')
-                            <span style="font-size: 0.75rem; color: var(--danger); display: block; margin-top: 5px;">{{ $message }}</span>
-                        @enderror
-                    </div>
+                                            </div>
                 </div>
             </div>
         </div>
@@ -361,38 +513,12 @@
                 
                 <div class="form-group">
                     <label class="form-label" for="home_hero_title">Judul Utama Beranda (Hero Title)</label>
-                    <input type="text" name="home_hero_title" id="home_hero_title" class="form-control" value="{{ old('home_hero_title', $settings['home_hero_title']) }}" placeholder="Masukkan Judul Utama Banner Beranda..." required>
+                    <input type="text" name="home_hero_title" id="home_hero_title" class="form-control" value="Sistem Informasi LPKIA" placeholder="Masukkan Judul Utama Banner Beranda..." required>
                 </div>
                 
                 <div class="form-group" style="margin-top: 20px;">
                     <label class="form-label" for="home_hero_text">Sub-judul / Deskripsi Beranda (Hero Description)</label>
-                    <textarea name="home_hero_text" id="home_hero_text" rows="4" class="form-control" style="resize: vertical;" placeholder="Masukkan Deskripsi Ringkas Banner Beranda...">{{ old('home_hero_text', $settings['home_hero_text']) }}</textarea>
-                </div>
-
-                <div class="form-group" style="margin-top: 20px;">
-                    <label class="form-label" for="home_hero_slider_interval">Waktu Jeda Transisi Slider (Detik)</label>
-                    <input type="number" name="home_hero_slider_interval" id="home_hero_slider_interval" class="form-control" value="{{ old('home_hero_slider_interval', $settings['home_hero_slider_interval']) }}" min="1" max="60" placeholder="Masukkan waktu transisi slider (contoh: 5)..." required>
-                    <span style="font-size: 0.8rem; color: var(--text-light); margin-top: 5px; display: block;">Jeda waktu sebelum slider berpindah ke gambar berikutnya secara otomatis.</span>
-                </div>
-
-                <div class="form-group" style="margin-top: 25px;">
-                    <label class="form-label" style="display: block; font-weight: 700; margin-bottom: 12px;">Daftar Gambar Slider (Hero Carousel)</label>
-                    
-                    <!-- Hidden field to store current active images JSON -->
-                    <input type="hidden" name="existing_hero_images" id="existing_hero_images" value="{{ old('existing_hero_images', $settings['home_hero_images']) }}">
-                    
-                    <!-- Preview grid -->
-                    <div id="hero-images-preview-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                        <!-- Will be populated by JS -->
-                    </div>
-
-                    <!-- New uploads -->
-                    <div class="image-upload-box" id="heroUploadBox" style="position: relative; height: 120px; border: 2px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
-                        <i class="fa-solid fa-images" style="font-size: 2rem; color: var(--text-light); margin-bottom: 8px;"></i>
-                        <span style="font-size: 0.85rem; color: var(--text-light); text-align: center; padding: 0 10px;">Klik untuk memilih/menambahkan beberapa gambar slider</span>
-                        <input type="file" name="hero_new_images[]" id="hero_new_images" multiple accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
-                    </div>
-                    <div id="heroUploadFeedback" style="font-size: 0.82rem; color: var(--success); font-weight: 600; margin-top: 8px; display: none;"></div>
+                    <textarea name="home_hero_text" id="home_hero_text" rows="4" class="form-control" style="resize: vertical;" placeholder="Masukkan Deskripsi Ringkas Banner Beranda..."></textarea>
                 </div>
             </div>
         </div>
@@ -412,7 +538,7 @@
                 </div>
 
                 <!-- Hidden Input to store the compiled JSON -->
-                <textarea name="navigation_menu" id="navigation_menu_input" style="display: none;">{{ old('navigation_menu', $settings['navigation_menu']) }}</textarea>
+                <textarea name="navigation_menu" id="navigation_menu_input" style="display: none;">[]</textarea>
 
                 <div class="builder-grid">
                     <!-- Add Form Sidebar -->
@@ -471,7 +597,7 @@
                 </div>
 
                 <!-- Hidden Input to store the compiled JSON -->
-                <textarea name="class_schedule" id="class_schedule_input" style="display: none;">{{ old('class_schedule', $settings['class_schedule']) }}</textarea>
+                <textarea name="class_schedule" id="class_schedule_input" style="display: none;">[]</textarea>
 
                 <div class="builder-grid">
                     <!-- Add Form Sidebar -->
@@ -547,17 +673,88 @@
 
         <!-- Submit buttons -->
         <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 10px; margin-bottom: 50px;">
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-outline" style="border-radius: var(--border-radius-lg); padding: 12px 28px; font-weight: 700;">Batal</a>
+            <a href="https://sisteminformasi.lpkia.ac.id/admin/dashboard" class="btn btn-outline" style="border-radius: var(--border-radius-lg); padding: 12px 28px; font-weight: 700;">Batal</a>
             <button type="submit" class="btn btn-primary" style="border-radius: var(--border-radius-lg); padding: 12px 28px; font-weight: 700;">
                 <i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan
             </button>
         </div>
         
     </form>
-@endsection
+            </div>
+        </div>
+    </div>
 
-@section('scripts')
-<script>
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Toast notifications and general Admin scripts -->
+    <script>
+        // Toggle Sidebar on Mobile
+        const sidebarToggle = document.getElementById('adminSidebarToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                adminSidebar.classList.toggle('active');
+            });
+        }
+
+        // Adjust sidebar toggle display
+        function checkMobile() {
+            if (!sidebarToggle || !adminSidebar) return;
+            if (window.innerWidth <= 1024) {
+                sidebarToggle.style.display = 'block';
+            } else {
+                sidebarToggle.style.display = 'none';
+                adminSidebar.classList.remove('active');
+            }
+        }
+        window.addEventListener('resize', checkMobile);
+        window.addEventListener('load', checkMobile);
+
+        // Sidebar Submenu toggle helper
+        function toggleSubmenu(id, event) {
+            event.preventDefault();
+            const submenu = document.getElementById(id);
+            if (submenu.style.display === 'block') {
+                submenu.style.display = 'none';
+            } else {
+                submenu.style.display = 'block';
+            }
+        }
+
+        // Beautiful Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-message ${type}`;
+            
+            let icon = '<i class="fa-solid fa-circle-check"></i>';
+            if (type === 'danger') {
+                icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info"></i>';
+            }
+
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+
+            // Show animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Fade out and remove
+            setTimeout(() => {
+                toast.style.transform = 'translateY(100px)';
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }, 4000);
+        }
+    </script>
+    <script>
     // ----------------------------------------------------
     // TAB NAVIGATION SCRIPT
     // ----------------------------------------------------
@@ -769,11 +966,11 @@
 
         schedules.forEach((sched, index) => {
             if (!sched) return;
-            const hari = String(sched.hari || sched.day || '');
-            const jam = String(sched.jam || sched.time || '');
-            const matkul = String(sched.matkul || sched.course || '');
-            const dosen = String(sched.dosen || sched.lecturer || '');
-            const ruangan = String(sched.ruangan || sched.room || '');
+            const hari = sched.hari || sched.day || '';
+            const jam = sched.jam || sched.time || '';
+            const matkul = sched.matkul || sched.course || '';
+            const dosen = sched.dosen || sched.lecturer || '';
+            const ruangan = sched.ruangan || sched.room || '';
             const isLab = ruangan.toLowerCase().includes('lab');
             
             const tr = document.createElement('tr');
@@ -833,99 +1030,9 @@
         }
     }
 
-    // ----------------------------------------------------
-    // HERO IMAGES SLIDER MANAGEMENT
-    // ----------------------------------------------------
-    const existingHeroInput = document.getElementById('existing_hero_images');
-    const previewGrid = document.getElementById('hero-images-preview-grid');
-    const heroNewImagesInput = document.getElementById('hero_new_images');
-    const heroUploadBox = document.getElementById('heroUploadBox');
-    const heroUploadFeedback = document.getElementById('heroUploadFeedback');
-
-    let heroImages = [];
-    if (existingHeroInput) {
-        try {
-            heroImages = JSON.parse(existingHeroInput.value || '[]');
-        } catch (e) {
-            heroImages = ['images/tech_hero.png'];
-        }
-        if (!Array.isArray(heroImages)) {
-            heroImages = ['images/tech_hero.png'];
-        }
-    }
-
-    function renderHeroPreviews() {
-        if (!previewGrid) return;
-        previewGrid.innerHTML = '';
-        if (heroImages.length === 0) {
-            previewGrid.innerHTML = '<div style="grid-column: 1/-1; color: var(--text-muted); font-size: 0.85rem; font-style: italic;">Belum ada gambar slider. Gambar default akan digunakan.</div>';
-            return;
-        }
-        heroImages.forEach((imgSrc, index) => {
-            const card = document.createElement('div');
-            card.style.position = 'relative';
-            card.style.borderRadius = '8px';
-            card.style.overflow = 'hidden';
-            card.style.border = '1px solid var(--border-color)';
-            card.style.height = '100px';
-            card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-
-            const img = document.createElement('img');
-            img.src = imgSrc.startsWith('http') || imgSrc.startsWith('/') ? imgSrc : '/' + imgSrc;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            card.appendChild(img);
-
-            // Delete button overlay
-            const delBtn = document.createElement('button');
-            delBtn.type = 'button';
-            delBtn.style.position = 'absolute';
-            delBtn.style.top = '5px';
-            delBtn.style.right = '5px';
-            delBtn.style.width = '24px';
-            delBtn.style.height = '24px';
-            delBtn.style.borderRadius = '50%';
-            delBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
-            delBtn.style.color = '#fff';
-            delBtn.style.border = 'none';
-            delBtn.style.cursor = 'pointer';
-            delBtn.style.display = 'flex';
-            delBtn.style.alignItems = 'center';
-            delBtn.style.justifyContent = 'center';
-            delBtn.style.fontSize = '0.75rem';
-            delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
-            delBtn.onclick = () => {
-                if (confirm('Hapus gambar ini dari slider?')) {
-                    heroImages.splice(index, 1);
-                    existingHeroInput.value = JSON.stringify(heroImages);
-                    renderHeroPreviews();
-                }
-            };
-            card.appendChild(delBtn);
-
-            previewGrid.appendChild(card);
-        });
-    }
-
-    if (heroNewImagesInput) {
-        heroNewImagesInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                heroUploadFeedback.innerText = `Terpilih ${e.target.files.length} gambar baru untuk diunggah saat disimpan.`;
-                heroUploadFeedback.style.display = 'block';
-                heroUploadBox.style.borderColor = 'var(--success)';
-                heroUploadBox.style.backgroundColor = 'rgba(16, 185, 129, 0.02)';
-            } else {
-                heroUploadFeedback.style.display = 'none';
-                heroUploadBox.style.borderColor = 'var(--border-color)';
-                heroUploadBox.style.backgroundColor = 'transparent';
-            }
-        });
-    }
-
     // Initialize lists
     renderMenu();
     renderSchedules();
-    renderHeroPreviews();
 </script>
-@endsection
+</body>
+</html>

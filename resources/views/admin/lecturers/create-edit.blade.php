@@ -3,6 +3,39 @@
 @section('title', isset($lecturer) ? 'Edit Dosen - Admin LPKIA' : 'Tambah Dosen Baru - Admin LPKIA')
 @section('page_title', isset($lecturer) ? 'Edit Data Dosen' : 'Tambah Dosen Baru')
 
+@section('styles')
+    <style>
+        .expertise-tag-label {
+            cursor: pointer;
+            user-select: none;
+        }
+        .expertise-tag-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.2s ease-in-out;
+        }
+        .expertise-tag-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(0, 136, 255, 0.03);
+            transform: translateY(-1px);
+        }
+        input[type="checkbox"]:checked + .expertise-tag-btn {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 136, 255, 0.15);
+        }
+    </style>
+@endsection
+
 @section('content')
 
     <div style="max-width: 600px; margin: 0 auto;">
@@ -14,7 +47,7 @@
                 @endif
 
                 <!-- Nama Dosen -->
-                <div class="form-group" style="margin-bottom: 20px;">
+                <div class="form-group" style="margin-bottom: 25px;">
                     <label for="name" style="font-weight: 700; color: var(--primary-dark); display: block; margin-bottom: 8px;">Nama Lengkap & Gelar</label>
                     <input type="text" name="name" id="name" class="form-control" placeholder="Contoh: Dr. Ahmad Sudrajat, M.T." value="{{ old('name', $lecturer->name ?? '') }}" required style="width: 100%; height: 42px;">
                     @error('name')
@@ -23,15 +56,49 @@
                 </div>
 
                 <!-- Bidang Keahlian -->
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="expertise" style="font-weight: 700; color: var(--primary-dark); display: block; margin-bottom: 8px;">Bidang Keahlian (Expertise)</label>
-                    <select name="expertise" id="expertise" class="form-control" required style="width: 100%; height: 42px; padding: 6px 12px; font-size: 0.9rem;">
-                        <option value="">Pilih Bidang Keahlian...</option>
-                        <option value="data" {{ old('expertise', $lecturer->expertise ?? '') === 'data' ? 'selected' : '' }}>Data Science & Analytics</option>
-                        <option value="dev" {{ old('expertise', $lecturer->expertise ?? '') === 'dev' ? 'selected' : '' }}>Software Engineering</option>
-                        <option value="gov" {{ old('expertise', $lecturer->expertise ?? '') === 'gov' ? 'selected' : '' }}>IT Governance</option>
-                    </select>
-                    @error('expertise')
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label style="font-weight: 700; color: var(--primary-dark); display: block; margin-bottom: 8px;">Bidang Keahlian (Expertise)</label>
+                    
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                        @forelse($expertises as $exp)
+                            @php
+                                $isSelected = (is_array(old('expertises')) && in_array($exp->id, old('expertises'))) || (isset($selectedExpertiseIds) && in_array($exp->id, $selectedExpertiseIds));
+                            @endphp
+                            <label class="expertise-tag-label">
+                                <input type="checkbox" name="expertises[]" value="{{ $exp->id }}" {{ $isSelected ? 'checked' : '' }} style="display: none;">
+                                <span class="expertise-tag-btn">
+                                    @if($exp->category === 'dev')
+                                        <i class="fa-solid fa-code"></i>
+                                    @elseif($exp->category === 'data')
+                                        <i class="fa-solid fa-chart-line"></i>
+                                    @elseif($exp->category === 'gov')
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    @else
+                                        <i class="fa-solid fa-tag"></i>
+                                    @endif
+                                    {{ $exp->name }}
+                                </span>
+                            </label>
+                        @empty
+                            <div style="color: var(--text-muted); font-size: 0.9rem; padding: 10px 0;">
+                                <i class="fa-solid fa-circle-info"></i> Belum ada data bidang keahlian terdaftar. 
+                                <a href="{{ route('admin.expertises.index') }}" target="_blank" style="color: var(--secondary); font-weight: 600; text-decoration: underline;">
+                                    Buat Bidang Keahlian Baru
+                                </a>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    @if(count($expertises) > 0)
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <a href="{{ route('admin.expertises.index') }}" target="_blank" style="font-size: 0.85rem; color: var(--secondary); font-weight: 600; text-decoration: none;">
+                                <i class="fa-solid fa-gear"></i> Kelola Master Keahlian Dosen
+                            </a>
+                            <span style="font-size: 0.8rem; color: var(--text-light);">Pilih minimal satu keahlian</span>
+                        </div>
+                    @endif
+
+                    @error('expertises')
                         <span style="color: var(--danger); font-size: 0.8rem; font-weight: 600; display: block; margin-top: 5px;">{{ $message }}</span>
                     @enderror
                 </div>

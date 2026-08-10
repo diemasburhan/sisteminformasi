@@ -12,31 +12,47 @@ class LecturerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Lecturer::query();
+        $query = Lecturer::with('expertises');
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('expertise')) {
-            $query->where('expertise', $request->expertise);
+            $expertise = $request->expertise;
+            $query->whereHas('expertises', function($q) use ($expertise) {
+                if ($expertise === 'dev') {
+                    $q->where('category', 'dev');
+                } elseif ($expertise === 'data') {
+                    $q->where('category', 'data');
+                } elseif ($expertise === 'gov') {
+                    $q->where('category', 'gov');
+                } else {
+                    $q->where('expertises.id', $expertise);
+                }
+            });
         }
 
         $lecturers = $query->orderBy('name', 'asc')->paginate(10)->withQueryString();
+        
+        // Retrieve all expertises for filter dropdown
+        $allExpertises = \App\Models\Expertise::orderBy('name', 'asc')->get();
 
-        return view('admin.lecturers.index', compact('lecturers'));
+        return view('admin.lecturers.index', compact('lecturers', 'allExpertises'));
     }
 
     public function create()
     {
-        return view('admin.lecturers.create-edit');
+        $expertises = \App\Models\Expertise::orderBy('name', 'asc')->get();
+        return view('admin.lecturers.create-edit', compact('expertises'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'expertise' => 'required|in:gov,dev,data',
+            'expertises' => 'required|array|min:1',
+            'expertises.*' => 'exists:expertises,id',
             'photo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -48,11 +64,16 @@ class LecturerController extends Controller
             $photoPath = 'uploads/lecturers/' . $filename;
         }
 
+        $selectedExpertises = \App\Models\Expertise::whereIn('id', $request->expertises)->get();
+        $expertiseString = $selectedExpertises->pluck('name')->implode(', ');
+
         $lecturer = Lecturer::create([
             'name' => $request->name,
-            'expertise' => $request->expertise,
+            'expertise' => $expertiseString,
             'photo' => $photoPath,
         ]);
+
+        $lecturer->expertises()->sync($request->expertises);
 
         ActivityLog::create([
             'user_id' => Auth::id(),
@@ -65,8 +86,10 @@ class LecturerController extends Controller
 
     public function edit($id)
     {
-        $lecturer = Lecturer::findOrFail($id);
-        return view('admin.lecturers.create-edit', compact('lecturer'));
+        $lecturer = Lecturer::with('expertises')->findOrFail($id);
+        $expertises = \App\Models\Expertise::orderBy('name', 'asc')->get();
+        $selectedExpertiseIds = $lecturer->expertises->pluck('id')->toArray();
+        return view('admin.lecturers.create-edit', compact('lecturer', 'expertises', 'selectedExpertiseIds'));
     }
 
     public function update(Request $request, $id)
@@ -75,7 +98,8 @@ class LecturerController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'expertise' => 'required|in:gov,dev,data',
+            'expertises' => 'required|array|min:1',
+            'expertises.*' => 'exists:expertises,id',
             'photo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -90,11 +114,16 @@ class LecturerController extends Controller
             $photoPath = 'uploads/lecturers/' . $filename;
         }
 
+        $selectedExpertises = \App\Models\Expertise::whereIn('id', $request->expertises)->get();
+        $expertiseString = $selectedExpertises->pluck('name')->implode(', ');
+
         $lecturer->update([
             'name' => $request->name,
-            'expertise' => $request->expertise,
+            'expertise' => $expertiseString,
             'photo' => $photoPath,
         ]);
+
+        $lecturer->expertises()->sync($request->expertises);
 
         ActivityLog::create([
             'user_id' => Auth::id(),

@@ -1717,6 +1717,7 @@ body.theme-modern .admin-sidebar {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--border-color);
+    left: 0;
 }
 body.theme-modern .admin-navbar {
     margin: 15px 15px 20px 15px;
@@ -1725,9 +1726,32 @@ body.theme-modern .admin-navbar {
     border: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    left: 275px;
+}
+body.theme-modern .admin-main {
+    margin-left: 275px;
+    padding-top: 115px;
 }
 body.theme-modern .admin-content-wrapper {
     padding: 0 20px 20px 20px;
+}
+
+@media (max-width: 1024px) {
+    body.theme-modern .admin-sidebar {
+        margin: 15px;
+        left: -290px;
+        height: calc(100vh - 30px);
+    }
+    body.theme-modern .admin-sidebar.active {
+        left: 0;
+    }
+    body.theme-modern .admin-navbar {
+        left: 0;
+    }
+    body.theme-modern .admin-main {
+        margin-left: 0;
+        padding-top: 115px;
+    }
 }
 body.theme-modern .editor-sidebar-widget, 
 body.theme-modern .stat-card, 

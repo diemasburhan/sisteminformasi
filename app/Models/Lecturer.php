@@ -11,4 +11,9 @@ class Lecturer extends Model
         'expertise',
         'photo',
     ];
+
+    public function expertises()
+    {
+        return $this->belongsToMany(Expertise::class, 'lecturer_expertise');
+    }
 }

@@ -20,11 +20,14 @@
     <div class="admin-layout">
         <!-- Sidebar Navigation -->
         <aside class="admin-sidebar" id="adminSidebar">
-            <div class="admin-sidebar-header">
-                <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-logo">
+            <div class="admin-sidebar-header" style="justify-content: space-between; align-items: center; display: flex; width: 100%;">
+                <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-logo" style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa-solid fa-graduation-cap" style="color: var(--secondary)"></i>
                     <span>ADMIN<span>LPKIA</span></span>
                 </a>
+                <button class="sidebar-close" id="adminSidebarClose" style="display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Tutup Menu">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <ul class="admin-sidebar-menu">
@@ -67,18 +70,22 @@
                             <a href="{{ route('admin.pages.create') }}" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Add New</a>
                         </li>
                     </ul>
+                </li>
                 <!-- Lecturers Submenu -->
-                <li class="admin-menu-item {{ Request::is('admin/lecturers*') ? 'active' : '' }}">
+                <li class="admin-menu-item {{ (Request::is('admin/lecturers*') || Request::is('admin/expertises*')) ? 'active' : '' }}">
                     <a href="#" class="admin-menu-link" onclick="toggleSubmenu('lecturersSubmenu', event)">
                         <i class="fa-solid fa-graduation-cap"></i> Dosen Pengajar
                         <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
                     </a>
-                    <ul class="admin-submenu" id="lecturersSubmenu" style="display: {{ Request::is('admin/lecturers*') ? 'block' : 'none' }};">
+                    <ul class="admin-submenu" id="lecturersSubmenu" style="display: {{ (Request::is('admin/lecturers*') || Request::is('admin/expertises*')) ? 'block' : 'none' }};">
                         <li class="admin-submenu-item {{ Route::is('admin.lecturers.index') ? 'active' : '' }}">
                             <a href="{{ route('admin.lecturers.index') }}" class="admin-submenu-link"><i class="fa-solid fa-list"></i> Semua Dosen</a>
                         </li>
                         <li class="admin-submenu-item {{ Route::is('admin.lecturers.create') ? 'active' : '' }}">
                             <a href="{{ route('admin.lecturers.create') }}" class="admin-submenu-link"><i class="fa-solid fa-plus"></i> Tambah Baru</a>
+                        </li>
+                        <li class="admin-submenu-item {{ Request::is('admin/expertises*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.expertises.index') }}" class="admin-submenu-link"><i class="fa-solid fa-tags"></i> Keahlian Dosen</a>
                         </li>
                     </ul>
                 </li>
@@ -99,14 +106,43 @@
                     </ul>
                 </li>
 
+                <!-- Jadwal Kelas -->
+                <li class="admin-menu-item {{ Request::is('admin/settings') && Request::get('tab') == 'tab-schedule' ? 'active' : '' }}">
+                    <a href="{{ route('admin.settings.index', ['tab' => 'tab-schedule']) }}" class="admin-menu-link">
+                        <i class="fa-solid fa-calendar-days"></i> Jadwal Kelas
+                    </a>
+                </li>
+
+                <!-- Appearance Submenu (Tampilan) -->
+                <li class="admin-menu-item {{ Request::is('admin/settings') && (Request::get('tab') == 'tab-hero' || Request::get('tab') == 'tab-menu') ? 'active' : '' }}">
+                    <a href="#" class="admin-menu-link" onclick="toggleSubmenu('appearanceSubmenu', event)">
+                        <i class="fa-solid fa-palette"></i> Tampilan
+                        <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.75rem;"></i>
+                    </a>
+                    <ul class="admin-submenu" id="appearanceSubmenu" style="display: {{ Request::is('admin/settings') && (Request::get('tab') == 'tab-hero' || Request::get('tab') == 'tab-menu') ? 'block' : 'none' }};">
+                        <li class="admin-submenu-item {{ Request::is('admin/settings') && Request::get('tab') == 'tab-hero' ? 'active' : '' }}">
+                            <a href="{{ route('admin.settings.index', ['tab' => 'tab-hero']) }}" class="admin-submenu-link">
+                                <i class="fa-solid fa-desktop"></i> Customizer Beranda
+                            </a>
+                        </li>
+                        <li class="admin-submenu-item {{ Request::is('admin/settings') && Request::get('tab') == 'tab-menu' ? 'active' : '' }}">
+                            <a href="{{ route('admin.settings.index', ['tab' => 'tab-menu']) }}" class="admin-submenu-link">
+                                <i class="fa-solid fa-compass"></i> Menu Navigasi
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Media Library -->
                 <li class="admin-menu-item">
                     <a href="#" class="admin-menu-link" onclick="showToast('Fitur Library Media tersedia dalam versi integrasi lengkap cloud.', 'info')">
                         <i class="fa-solid fa-images"></i> Media Library
                     </a>
                 </li>
 
-                <li class="admin-menu-item {{ Route::is('admin.settings.index') ? 'active' : '' }}">
-                    <a href="{{ route('admin.settings.index') }}" class="admin-menu-link">
+                <!-- Settings -->
+                <li class="admin-menu-item {{ Request::is('admin/settings') && (!Request::has('tab') || Request::get('tab') == 'tab-general') ? 'active' : '' }}">
+                    <a href="{{ route('admin.settings.index', ['tab' => 'tab-general']) }}" class="admin-menu-link">
                         <i class="fa-solid fa-gears"></i> Settings
                     </a>
                 </li>
@@ -170,25 +206,49 @@
     <script>
         // Toggle Sidebar on Mobile
         const sidebarToggle = document.getElementById('adminSidebarToggle');
+        const sidebarClose = document.getElementById('adminSidebarClose');
         const adminSidebar = document.getElementById('adminSidebar');
 
         if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', () => {
-                adminSidebar.classList.toggle('active');
+            sidebarToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                adminSidebar.classList.add('active');
             });
         }
 
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', (e) => {
+                e.stopPropagation();
+                adminSidebar.classList.remove('active');
+            });
+        }
+
+        // Close sidebar when clicking outside of it on mobile/tablet
+        document.addEventListener('click', (event) => {
+            if (window.innerWidth <= 1024 && adminSidebar && adminSidebar.classList.contains('active')) {
+                if (!adminSidebar.contains(event.target) && (!sidebarToggle || !sidebarToggle.contains(event.target))) {
+                    adminSidebar.classList.remove('active');
+                }
+            }
+        });
+
         // Adjust sidebar toggle display
         function checkMobile() {
+            if (!sidebarToggle || !adminSidebar) return;
             if (window.innerWidth <= 1024) {
                 sidebarToggle.style.display = 'block';
+                if (sidebarClose) sidebarClose.style.display = 'block';
             } else {
                 sidebarToggle.style.display = 'none';
+                if (sidebarClose) sidebarClose.style.display = 'none';
                 adminSidebar.classList.remove('active');
             }
         }
         window.addEventListener('resize', checkMobile);
         window.addEventListener('load', checkMobile);
+        document.addEventListener('DOMContentLoaded', checkMobile);
+        checkMobile();
+
 
         // Sidebar Submenu toggle helper
         function toggleSubmenu(id, event) {

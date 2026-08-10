@@ -49,7 +49,7 @@ class HomeController extends Controller
             'enrollment' => json_decode(Setting::get('stats_yearly_enrollment', '[]'), true),
         ];
 
-        $lecturers = Lecturer::orderBy('name', 'asc')->get();
+        $lecturers = Lecturer::with('expertises')->orderBy('name', 'asc')->get();
         $orgMembers = OrgMember::orderBy('sort_order', 'asc')->get();
 
         return view('public.home', compact('posts', 'pages', 'stats', 'lecturers', 'orgMembers', 'sliderPosts'));
