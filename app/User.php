@@ -40,11 +40,10 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         if ($value) {
-            $this->attributes['password'] = \Illuminate\Support\Facades\Hash::needsRehash($value) 
-                ? \Illuminate\Support\Facades\Hash::make($value) 
-                : $value;
+            $this->attributes['password'] = \Illuminate\Support\Facades\Hash::make($value);
         }
     }
+
 
     public function isAdmin()
     {

@@ -4,254 +4,1346 @@
 
 @section('styles')
 <style>
-    .post-detail-layout {
+    :root {
+        --news-blue: #0b63f6;
+        --news-blue-dark: #084bb8;
+        --news-dark: #101828;
+        --news-muted: #667085;
+        --news-border: #e4e7ec;
+        --news-bg: #f8fafc;
+        --news-white: #ffffff;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--news-bg);
+        color: var(--news-dark);
+    }
+
+    /* ==============================
+       PAGE WRAPPER
+    ============================== */
+
+    .news-page {
+        padding: 55px 0 90px;
+        min-height: 100vh;
+    }
+
+    .news-container {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+    }
+
+    .news-grid {
         display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: 40px;
-        margin-top: 40px;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 30px;
+        align-items: start;
     }
-    .post-main-content {
-        background-color: var(--bg-white);
-        border-radius: var(--border-radius-lg);
-        padding: 40px;
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border-color);
+
+    /* ==============================
+       MAIN ARTICLE
+    ============================== */
+
+    .article-card {
+        background: #fff;
+        border: 1px solid var(--news-border);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(16, 24, 40, 0.06);
     }
-    .post-meta-details {
+
+    .article-inner {
+        padding: 38px 42px 45px;
+    }
+
+    /* Breadcrumb */
+
+    .news-breadcrumb {
         display: flex;
-        gap: 20px;
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 28px;
+        font-size: 13px;
+        color: var(--news-muted);
     }
-    .post-featured-image {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: var(--border-radius);
-        margin-bottom: 30px;
-    }
-    .post-body-text {
-        font-size: 1.05rem;
-        color: var(--text-dark);
-        line-height: 1.8;
-    }
-    .post-body-text p {
-        margin-bottom: 20px;
-    }
-    .sidebar-widget {
-        background-color: var(--bg-white);
-        border-radius: var(--border-radius-lg);
-        padding: 24px;
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border-color);
-        margin-bottom: 30px;
-    }
-    .sidebar-title {
-        font-size: 1rem;
+
+    .news-breadcrumb a {
+        color: var(--news-blue);
+        text-decoration: none;
         font-weight: 700;
-        color: var(--primary);
-        border-bottom: 2px solid var(--secondary);
-        padding-bottom: 8px;
-        margin-bottom: 15px;
     }
-    .categories-list {
-        list-style: none;
+
+    .news-breadcrumb a:hover {
+        text-decoration: underline;
     }
-    .categories-list li {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 0.9rem;
+
+    .breadcrumb-separator {
+        color: #98a2b3;
     }
-    .recent-posts-list {
-        list-style: none;
-    }
-    .recent-posts-list li {
-        margin-bottom: 15px;
-        font-size: 0.88rem;
-    }
-    .recent-posts-list li a {
-        color: var(--primary);
-        font-weight: 600;
-        line-height: 1.4;
-        display: block;
-    }
-    .recent-posts-list li a:hover {
-        color: var(--secondary);
-    }
-    .recent-posts-list li span {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-    }
-    
-    /* Comments section */
-    .comments-wrapper {
-        margin-top: 40px;
-        border-top: 1px solid var(--border-color);
-        padding-top: 30px;
-    }
-    .comments-title {
-        font-size: 1.3rem;
+
+    /* Category */
+
+    .article-category {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 13px;
+        background: #eaf2ff;
+        color: var(--news-blue);
+        border-radius: 999px;
+        font-size: 12px;
         font-weight: 800;
-        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-bottom: 17px;
+    }
+
+    /* Title */
+
+    .article-title {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        font-weight: 850;
+        color: #101828;
+        max-width: 900px;
+    }
+
+    /* Meta */
+
+    .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 22px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid var(--news-border);
+    }
+
+    .article-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--news-muted);
+        font-size: 14px;
+    }
+
+    .article-meta-item i {
+        color: var(--news-blue);
+    }
+
+    .article-author {
+        font-weight: 700;
+        color: #344054;
+    }
+
+    /* Featured Image */
+
+    .article-featured {
+        margin: 30px 0 35px;
+        border-radius: 17px;
+        overflow: hidden;
+        background: #eef2f6;
+    }
+
+    .article-featured img {
+        display: block;
+        width: 100%;
+        max-height: 620px;
+        object-fit: cover;
+    }
+
+    .article-no-image {
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        color: #98a2b3;
+        background: linear-gradient(135deg, #f2f4f7, #e4e7ec);
+    }
+
+    .article-no-image i {
+        font-size: 45px;
+    }
+
+    /* Content */
+
+    .article-content {
+        color: #344054;
+        font-size: 17px;
+        line-height: 1.9;
+        word-break: break-word;
+    }
+
+    .article-content p {
+        margin: 0 0 22px;
+    }
+
+    .article-content h1,
+    .article-content h2,
+    .article-content h3,
+    .article-content h4 {
+        color: #101828;
+        line-height: 1.3;
+        margin-top: 35px;
+        margin-bottom: 15px;
+    }
+
+    .article-content h2 {
+        font-size: 27px;
+    }
+
+    .article-content h3 {
+        font-size: 22px;
+    }
+
+    .article-content a {
+        color: var(--news-blue);
+        font-weight: 600;
+    }
+
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 14px;
+        margin: 20px 0;
+    }
+
+    .article-content blockquote {
+        margin: 30px 0;
+        padding: 20px 24px;
+        border-left: 4px solid var(--news-blue);
+        background: #f5f9ff;
+        border-radius: 0 12px 12px 0;
+        color: #475467;
+    }
+
+    .article-content ul,
+    .article-content ol {
+        padding-left: 28px;
+        margin-bottom: 24px;
+    }
+
+    /* ==============================
+   BERITA TERBARU
+============================== */
+
+.recent-news-section {
+    margin-top: 60px;
+    padding-top: 45px;
+    border-top: 1px solid var(--news-border);
+}
+
+.recent-news-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 28px;
+}
+
+.recent-news-label {
+    display: block;
+    margin-bottom: 10px;
+
+    color: var(--news-blue);
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.recent-news-header h2 {
+    margin: 0;
+
+    color: #101828;
+
+    font-size: clamp(25px, 3vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -.04em;
+}
+
+.recent-news-header p {
+    max-width: 600px;
+    margin: 10px 0 0;
+
+    color: var(--news-muted);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.recent-news-link {
+    color: var(--news-blue);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.recent-news-link:hover {
+    text-decoration: underline;
+}
+
+
+/* GRID */
+
+.recent-news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+
+/* CARD */
+
+.recent-news-card {
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border: 1px solid var(--news-border);
+    border-radius: 16px;
+
+    text-decoration: none;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+.recent-news-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(11, 99, 246, .35);
+
+    box-shadow:
+        0 18px 40px rgba(16, 24, 40, .10);
+}
+
+
+/* IMAGE */
+
+.recent-news-image {
+    width: 100%;
+    height: 175px;
+
+    overflow: hidden;
+
+    background: #eef2f6;
+}
+
+.recent-news-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform .45s ease;
+}
+
+.recent-news-card:hover .recent-news-image img {
+    transform: scale(1.05);
+}
+
+.recent-news-no-image {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(
+        135deg,
+        #eef4ff,
+        #dbeafe
+    );
+
+    color: var(--news-blue);
+
+    font-size: 32px;
+}
+
+
+/* CONTENT */
+
+.recent-news-content {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    padding: 20px;
+}
+
+.recent-news-category {
+    display: inline-block;
+
+    margin-bottom: 9px;
+
+    color: var(--news-blue);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.recent-news-content h3 {
+    margin: 0;
+
+    color: #101828;
+
+    font-size: 17px;
+    line-height: 1.35;
+    letter-spacing: -.02em;
+}
+
+.recent-news-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 14px;
+
+    color: #98a2b3;
+
+    font-size: 11px;
+}
+
+.recent-news-read {
+    margin-top: auto;
+    padding-top: 18px;
+
+    color: var(--news-blue);
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* EMPTY */
+
+.recent-news-empty {
+    padding: 25px;
+
+    border: 1px dashed var(--news-border);
+    border-radius: 14px;
+
+    color: var(--news-muted);
+
+    text-align: center;
+    font-size: 14px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+    .recent-news-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .recent-news-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-news-image {
+        height: 210px;
+    }
+
+}
+
+    /* ==============================
+       COMMENTS
+    ============================== */
+
+    .comments-section {
+        margin-top: 42px;
+        padding-top: 35px;
+        border-top: 1px solid var(--news-border);
+    }
+
+    .comments-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 10px;
+        color: #101828;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .comments-heading i {
+        color: var(--news-blue);
+    }
+
+    .comments-description {
+        color: var(--news-muted);
+        font-size: 14px;
         margin-bottom: 25px;
     }
-    .comment-card {
-        background-color: #F8FAFC;
-        padding: 20px;
-        border-radius: var(--border-radius);
-        margin-bottom: 20px;
-        border-left: 4px solid var(--primary);
-    }
-    .comment-header {
+
+    .comment-list {
         display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .comment-item {
+        padding: 20px;
+        border: 1px solid var(--news-border);
+        border-radius: 15px;
+        background: #fff;
+    }
+
+    .comment-top {
+        display: flex;
+        align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
-        font-size: 0.85rem;
+        gap: 15px;
+        margin-bottom: 12px;
     }
+
     .comment-author {
-        font-weight: 700;
-        color: var(--primary);
+        font-weight: 800;
+        color: #101828;
     }
+
     .comment-date {
-        color: var(--text-muted);
+        color: #98a2b3;
+        font-size: 12px;
     }
-    .comment-body {
-        font-size: 0.92rem;
+
+    .comment-text {
+        color: #475467;
+        line-height: 1.7;
+        font-size: 14px;
+        margin: 0;
     }
-    
-    .comment-form-card {
-        background-color: var(--bg-white);
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius-lg);
-        padding: 30px;
-        margin-top: 45px;
+
+    .comment-form {
+        background: #f8fafc;
+        border: 1px solid var(--news-border);
+        border-radius: 18px;
+        padding: 27px;
     }
-    
-    @media(max-width: 768px) {
-        .post-detail-layout {
+
+    .comment-form-title {
+        margin: 0 0 22px;
+        color: #101828;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .comment-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 17px;
+    }
+
+    .comment-field {
+        margin-bottom: 17px;
+    }
+
+    .comment-field.full {
+        grid-column: 1 / -1;
+    }
+
+    .comment-field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #344054;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .comment-field input,
+    .comment-field textarea {
+        width: 100%;
+        border: 1px solid #d0d5dd;
+        border-radius: 11px;
+        background: #fff;
+        padding: 12px 14px;
+        font-family: inherit;
+        font-size: 14px;
+        color: #101828;
+        outline: none;
+        transition: .2s ease;
+    }
+
+    .comment-field input {
+        height: 46px;
+    }
+
+    .comment-field textarea {
+        min-height: 135px;
+        resize: vertical;
+    }
+
+    .comment-field input:focus,
+    .comment-field textarea:focus {
+        border-color: var(--news-blue);
+        box-shadow: 0 0 0 4px rgba(11, 99, 246, .10);
+    }
+
+    .comment-submit {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, var(--news-blue), #3984ff);
+        color: #fff;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(11, 99, 246, .22);
+        transition: .2s ease;
+    }
+
+    .comment-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 11px 25px rgba(11, 99, 246, .28);
+    }
+
+    /* ==============================
+       SIDEBAR
+    ============================== */
+
+    .news-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        position: sticky;
+        top: 25px;
+    }
+
+    .sidebar-card {
+        background: #fff;
+        border: 1px solid var(--news-border);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 10px 28px rgba(16, 24, 40, .05);
+    }
+
+    .sidebar-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--news-border);
+        color: #101828;
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .sidebar-title::before {
+        content: "";
+        width: 4px;
+        height: 22px;
+        border-radius: 999px;
+        background: var(--news-blue);
+    }
+
+    /* Category */
+
+    .category-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .category-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 0;
+        color: #344054;
+        text-decoration: none;
+        border-bottom: 1px solid #f2f4f7;
+        font-size: 14px;
+        transition: .2s ease;
+    }
+
+    .category-link:last-child {
+        border-bottom: none;
+    }
+
+    .category-link:hover {
+        color: var(--news-blue);
+        padding-left: 4px;
+    }
+
+    .category-count {
+        min-width: 28px;
+        height: 26px;
+        padding: 0 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f2f4f7;
+        color: #667085;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    /* Latest Posts */
+
+    .latest-post {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 12px;
+        padding: 13px 0;
+        border-bottom: 1px solid #f2f4f7;
+        text-decoration: none;
+    }
+
+    .latest-post:last-child {
+        border-bottom: none;
+    }
+
+    .latest-post-image {
+        width: 76px;
+        height: 64px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #f2f4f7;
+    }
+
+    .latest-post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .latest-post-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #98a2b3;
+    }
+
+    .latest-post-title {
+        margin: 0 0 7px;
+        color: #101828;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.4;
+    }
+
+    .latest-post-date {
+        color: #98a2b3;
+        font-size: 11px;
+    }
+
+    .latest-post:hover .latest-post-title {
+        color: var(--news-blue);
+    }
+
+    /* ==============================
+       RESPONSIVE
+    ============================== */
+
+    @media (max-width: 950px) {
+        .news-grid {
             grid-template-columns: 1fr;
+        }
+
+        .news-sidebar {
+            position: static;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .news-page {
+            padding: 25px 0 55px;
+        }
+
+        .news-container {
+            width: min(100% - 24px, 1180px);
+        }
+
+        .article-inner {
+            padding: 25px 20px 30px;
+        }
+
+        .article-title {
+            font-size: 2rem;
+        }
+
+        .article-meta {
+            gap: 11px;
+        }
+
+        .article-featured {
+            margin: 22px 0 27px;
+            border-radius: 12px;
+        }
+
+        .article-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .comment-form-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .comment-field.full {
+            grid-column: auto;
+        }
+
+        .news-sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar-card {
+            padding: 20px;
         }
     }
 </style>
 @endsection
 
+
 @section('content')
-<div class="container">
-    <div class="post-detail-layout">
-        
-        <!-- Main Post Details -->
-        <div class="post-main-content">
-            <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1.2; margin-bottom: 15px;">
-                {{ $post->title }}
+
+<div class="news-page">
+
+    <div class="news-container">
+
+        <div class="news-grid">
+
+            {{-- =====================================
+                 ARTICLE
+            ====================================== --}}
+
+            <main>
+
+                <article class="article-card">
+
+                    <div class="article-inner">
+
+                        {{-- Breadcrumb --}}
+                        <nav class="news-breadcrumb">
+
+                            <a href="{{ route('home') }}">
+                                <i class="fa-solid fa-house"></i>
+                                Beranda
+                            </a>
+
+                            <span class="breadcrumb-separator">/</span>
+
+                            <a href="{{ route('public.posts') }}">
+                                Berita
+                            </a>
+
+                            <span class="breadcrumb-separator">/</span>
+
+                            <span>
+                                {{ \Illuminate\Support\Str::limit($post->title, 40) }}
+                            </span>
+
+                        </nav>
+
+
+                        {{-- Category --}}
+                        @if($post->category)
+                            <div class="article-category">
+                                <i class="fa-solid fa-folder"></i>
+
+                                {{ $post->category->name }}
+                            </div>
+                        @endif
+
+
+                        {{-- Title --}}
+                        <h1 class="article-title">
+                            {{ $post->title }}
+                        </h1>
+
+
+                        {{-- Metadata --}}
+                        <div class="article-meta">
+
+                            <span class="article-meta-item">
+                                <i class="fa-regular fa-calendar"></i>
+
+                                {{ $post->published_at
+                                    ? $post->published_at->format('d M Y')
+                                    : $post->created_at->format('d M Y') }}
+                            </span>
+
+                            <span class="article-meta-item">
+                                <i class="fa-regular fa-clock"></i>
+
+                                {{ $post->published_at
+                                    ? $post->published_at->format('H:i')
+                                    : $post->created_at->format('H:i') }}
+                            </span>
+
+                            @if($post->author)
+                                <span class="article-meta-item article-author">
+                                    <i class="fa-regular fa-user"></i>
+
+                                    {{ $post->author->name }}
+                                </span>
+                            @endif
+
+                        </div>
+
+
+                        {{-- Featured Image --}}
+                        <div class="article-featured">
+
+                            @if($post->featured_image)
+
+                                <img
+                                    src="{{ asset($post->featured_image) }}"
+                                    alt="{{ $post->title }}"
+                                >
+
+                            @else
+
+                                <div class="article-no-image">
+                                    <i class="fa-regular fa-image"></i>
+                                    <span>Tidak ada gambar utama</span>
+                                </div>
+
+                            @endif
+
+                        </div>
+
+
+                        {{-- Article Content --}}
+                        <div class="article-content">
+
+                            {!! $post->content !!}
+
+                        </div>
+
+                        {{-- =====================================
+     BERITA TERBARU
+====================================== --}}
+
+<section class="recent-news-section">
+
+    <div class="recent-news-header">
+
+        <div>
+            <span class="recent-news-label">
+                BERITA TERBARU
+            </span>
+
+            <h2>
+                Berita terbaru dari Sistem Informasi
             </h2>
-            
-            <div class="post-meta-details">
-                <span><i class="fa-solid fa-folder-open"></i> {{ $post->category->name }}</span>
-                <span><i class="fa-solid fa-calendar-days"></i> {{ $post->published_at ? $post->published_at->format('d M Y H:i') : $post->created_at->format('d M Y') }}</span>
-                <span><i class="fa-solid fa-user"></i> {{ $post->author->name }}</span>
-            </div>
 
-            @if($post->featured_image)
-                <img src="{{ asset($post->featured_image) }}" alt="{{ $post->title }}" class="post-featured-image">
-            @endif
-
-            <div class="post-body-text">
-                {!! $post->content !!}
-            </div>
-
-            <!-- Toast Success Alerts for Comments -->
-            @if(session('success'))
-                <div class="alert alert-success" style="margin-top: 30px;">
-                    <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-                </div>
-            @endif
-
-            <!-- Comments List -->
-            <div class="comments-wrapper">
-                <h3 class="comments-title"><i class="fa-solid fa-comments"></i> Komentar ({{ count($post->comments) }})</h3>
-                
-                @forelse($post->comments as $comment)
-                    <div class="comment-card">
-                        <div class="comment-header">
-                            <span class="comment-author"><i class="fa-solid fa-user-circle"></i> {{ $comment->author_name }}</span>
-                            <span class="comment-date">{{ $comment->created_at->diffForHumans() }}</span>
-                        </div>
-                        <p class="comment-body">{{ $comment->content }}</p>
-                    </div>
-                @empty
-                    <p style="color: var(--text-muted); font-style: italic;">Belum ada komentar untuk postingan ini. Jadilah yang pertama berkomentar!</p>
-                @endforelse
-            </div>
-
-            <!-- Comment Submission Form -->
-            <div class="comment-form-card">
-                <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
-                    Tinggalkan Komentar
-                </h4>
-                <form action="{{ route('public.comment.store', $post->id) }}" method="POST">
-                    @csrf
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label class="form-label" for="author_name">Nama Lengkap *</label>
-                            <input type="text" name="author_name" id="author_name" class="form-control" required value="{{ old('author_name') }}">
-                            @error('author_name')
-                                <span style="font-size: 0.75rem; color: var(--danger);">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label class="form-label" for="author_email">Alamat Email *</label>
-                            <input type="email" name="author_email" id="author_email" class="form-control" required value="{{ old('author_email') }}">
-                            @error('author_email')
-                                <span style="font-size: 0.75rem; color: var(--danger);">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="content">Isi Komentar *</label>
-                        <textarea name="content" id="content" rows="5" class="form-control" required style="resize: vertical;">{{ old('content') }}</textarea>
-                        @error('content')
-                            <span style="font-size: 0.75rem; color: var(--danger);">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <button type="submit" class="btn btn-primary">Kirim Komentar</button>
-                </form>
-            </div>
+            <p>
+                Informasi, kegiatan, dan kabar terbaru dari Program Studi Sistem Informasi LPKIA.
+            </p>
         </div>
 
-        <!-- Sidebar Widgets -->
-        <aside>
-            <div class="sidebar-widget">
-                <h4 class="sidebar-title">Kategori Halaman</h4>
-                <ul class="categories-list">
-                    @foreach($categories as $category)
-                        <li>
-                            <span>{{ $category->name }}</span>
-                            <span class="badge badge-secondary">{{ $category->posts_count }}</span>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
+        <a href="{{ route('public.posts') }}" class="recent-news-link">
+            Lihat semua berita →
+        </a>
 
-            <div class="sidebar-widget">
-                <h4 class="sidebar-title">Postingan Terbaru</h4>
-                <ul class="recent-posts-list">
-                    @forelse($recentPosts as $rp)
-                        <li>
-                            <a href="{{ route('public.post.show', $rp->slug) }}">{{ $rp->title }}</a>
-                            <span>{{ $rp->published_at ? $rp->published_at->format('d M Y') : $rp->created_at->format('d M Y') }}</span>
-                        </li>
-                    @empty
-                        <li>Tidak ada postingan lain.</li>
-                    @endforelse
-                </ul>
-            </div>
-        </aside>
-        
     </div>
+
+
+    @php
+        $latestPosts = \App\Models\Post::with(['category'])
+            ->where('status', 'published')
+            ->where('id', '!=', $post->id)
+            ->where(function($query) {
+                $query->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+            })
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->take(3)
+            ->get();
+    @endphp
+
+
+    @if($latestPosts->count())
+
+        <div class="recent-news-grid">
+
+            @foreach($latestPosts as $latest)
+
+                <a
+                    href="{{ route('public.post.show', $latest->slug) }}"
+                    class="recent-news-card"
+                >
+
+                    <div class="recent-news-image">
+
+                        @if($latest->featured_image)
+
+                            <img
+                                src="{{ asset($latest->featured_image) }}"
+                                alt="{{ $latest->title }}"
+                            >
+
+                        @else
+
+                            <div class="recent-news-no-image">
+                                <i class="fa-regular fa-newspaper"></i>
+                            </div>
+
+                        @endif
+
+                    </div>
+
+
+                    <div class="recent-news-content">
+
+                        @if($latest->category)
+
+                            <span class="recent-news-category">
+                                {{ $latest->category->name }}
+                            </span>
+
+                        @endif
+
+
+                        <h3>
+                            {{ $latest->title }}
+                        </h3>
+
+
+                        <div class="recent-news-date">
+
+                            <i class="fa-regular fa-calendar"></i>
+
+                            {{ $latest->published_at
+                                ? $latest->published_at->format('d M Y')
+                                : $latest->created_at->format('d M Y') }}
+
+                        </div>
+
+
+                        <span class="recent-news-read">
+                            Baca berita →
+                        </span>
+
+                    </div>
+
+                </a>
+
+            @endforeach
+
+        </div>
+
+    @else
+
+        <div class="recent-news-empty">
+            Belum ada berita lainnya.
+        </div>
+
+    @endif
+
+</section>
+
+                        {{-- =====================================
+                             COMMENTS
+                        ====================================== --}}
+
+                        <section class="comments-section">
+
+                            <h2 class="comments-heading">
+
+                                <i class="fa-regular fa-comments"></i>
+
+                                Komentar
+                                ({{ $post->comments->where('status', 'approved')->count() }})
+
+                            </h2>
+
+                            <p class="comments-description">
+
+                                Silakan berikan komentar atau pendapat kamu mengenai berita ini.
+
+                            </p>
+
+
+                            {{-- Comment List --}}
+                            <div class="comment-list">
+
+                                @forelse(
+                                    $post->comments->where('status', 'approved')
+                                    as $comment
+                                )
+
+                                    <div class="comment-item">
+
+                                        <div class="comment-top">
+
+                                            <span class="comment-author">
+                                                {{ $comment->author_name }}
+                                            </span>
+
+                                            <span class="comment-date">
+                                                {{ $comment->created_at->format('d M Y H:i') }}
+                                            </span>
+
+                                        </div>
+
+                                        <p class="comment-text">
+                                            {{ $comment->content }}
+                                        </p>
+
+                                    </div>
+
+                                @empty
+
+                                    <div class="comment-item">
+
+                                        <p class="comment-text">
+                                            Belum ada komentar untuk postingan ini.
+                                            Jadilah yang pertama berkomentar!
+                                        </p>
+
+                                    </div>
+
+                                @endforelse
+
+                            </div>
+
+
+                            {{-- Comment Form --}}
+                            <div class="comment-form">
+
+                                <h3 class="comment-form-title">
+                                    Tinggalkan Komentar
+                                </h3>
+
+
+                                @if(session('success'))
+
+                                    <div style="
+                                        margin-bottom:20px;
+                                        padding:12px 15px;
+                                        border-radius:10px;
+                                        background:#ecfdf3;
+                                        color:#027a48;
+                                        border:1px solid #abefc6;
+                                        font-size:14px;
+                                        font-weight:600;
+                                    ">
+                                        {{ session('success') }}
+                                    </div>
+
+                                @endif
+
+
+                                @if($errors->any())
+
+                                    <div style="
+                                        margin-bottom:20px;
+                                        padding:12px 15px;
+                                        border-radius:10px;
+                                        background:#fef3f2;
+                                        color:#b42318;
+                                        border:1px solid #fecdca;
+                                        font-size:14px;
+                                    ">
+
+                                        @foreach($errors->all() as $error)
+                                            <div>{{ $error }}</div>
+                                        @endforeach
+
+                                    </div>
+
+                                @endif
+
+
+                                <form
+                                    action="{{ route('public.comment.store', $post->id) }}"
+                                    method="POST"
+                                >
+
+                                    @csrf
+
+                                    <div class="comment-form-grid">
+
+                                        <div class="comment-field">
+
+                                            <label for="author_name">
+                                                Nama Lengkap *
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                id="author_name"
+                                                name="author_name"
+                                                value="{{ old('author_name') }}"
+                                                placeholder="Masukkan nama lengkap"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div class="comment-field">
+
+                                            <label for="author_email">
+                                                Alamat Email *
+                                            </label>
+
+                                            <input
+                                                type="email"
+                                                id="author_email"
+                                                name="author_email"
+                                                value="{{ old('author_email') }}"
+                                                placeholder="Masukkan email"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div class="comment-field full">
+
+                                            <label for="content">
+                                                Isi Komentar *
+                                            </label>
+
+                                            <textarea
+                                                id="content"
+                                                name="content"
+                                                placeholder="Tulis komentar Anda di sini..."
+                                                required
+                                            >{{ old('content') }}</textarea>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button
+                                        type="submit"
+                                        class="comment-submit"
+                                    >
+
+                                        <i class="fa-solid fa-paper-plane"></i>
+
+                                        Kirim Komentar
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </article>
+
+            </main>
+
+
+            {{-- =====================================
+                 SIDEBAR
+            ====================================== --}}
+
+            <aside class="news-sidebar">
+
+
+                {{-- Categories --}}
+                <div class="sidebar-card">
+
+                    <h3 class="sidebar-title">
+                        Kategori Berita
+                    </h3>
+
+                    <div class="category-list">
+
+                        @php
+                            $categories = \App\Models\Category::withCount([
+                                'posts' => function ($query) {
+                                    $query->where('status', 'published');
+                                }
+                            ])->get();
+                        @endphp
+
+
+                        @forelse($categories as $category)
+
+                            <a
+                                href="{{ route('public.posts', ['category_id' => $category->id]) }}"
+                                class="category-link"
+                            >
+
+                                <span>
+                                    {{ $category->name }}
+                                </span>
+
+                                <span class="category-count">
+                                    {{ $category->posts_count }}
+                                </span>
+
+                            </a>
+
+                        @empty
+
+                            <span style="
+                                color:#98a2b3;
+                                font-size:13px;
+                            ">
+                                Belum ada kategori.
+                            </span>
+
+                        @endforelse
+
+                    </div>
+
+                </div>
+
+
+                
+
+
+            </aside>
+
+        </div>
+
+    </div>
+
 </div>
+
 @endsection

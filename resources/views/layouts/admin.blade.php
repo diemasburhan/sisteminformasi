@@ -140,6 +140,27 @@
                     </a>
                 </li>
 
+                <!-- SI Galeri -->
+                <li class="admin-menu-item {{ Request::is('admin/galleries*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.galleries.index') }}" class="admin-menu-link">
+                        <i class="fa-solid fa-camera-retro"></i> SI Galeri
+                    </a>
+                </li>
+
+                <!-- Pertanyaan FAQ -->
+                @php
+                    $newFaqCount = \App\Models\FaqQuestion::where('status', 'Baru')->count();
+                @endphp
+                <li class="admin-menu-item {{ Request::is('admin/faq-questions*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.faq-questions.index') }}" class="admin-menu-link" style="display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="fa-solid fa-comments"></i> Pertanyaan FAQ</span>
+                        @if($newFaqCount > 0)
+                            <span style="background: #ef4444; color: white; border-radius: 9999px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; line-height: 1;">{{ $newFaqCount }}</span>
+                        @endif
+                    </a>
+                </li>
+
+
                 <!-- Settings -->
                 <li class="admin-menu-item {{ Request::is('admin/settings') && (!Request::has('tab') || Request::get('tab') == 'tab-general') ? 'active' : '' }}">
                     <a href="{{ route('admin.settings.index', ['tab' => 'tab-general']) }}" class="admin-menu-link">

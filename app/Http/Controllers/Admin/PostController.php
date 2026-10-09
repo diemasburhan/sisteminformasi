@@ -67,7 +67,7 @@ class PostController extends Controller
         $imagePath = null;
         if ($request->hasFile('featured_image')) {
             $file = $request->file('featured_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/posts'), $filename);
             $imagePath = 'uploads/posts/' . $filename;
         }
@@ -125,7 +125,7 @@ class PostController extends Controller
             }
 
             $file = $request->file('featured_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/posts'), $filename);
             $imagePath = 'uploads/posts/' . $filename;
         }
