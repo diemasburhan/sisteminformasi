@@ -37,10 +37,18 @@ class AuthController extends Controller
                 ->with('success', 'Selamat datang kembali, ' . Auth::user()->name);
         }
 
+        // Log percobaan login yang gagal
+        ActivityLog::create([
+            'user_id' => null,
+            'activity' => 'Login Failed',
+            'details' => 'Failed login attempt for email: ' . $request->email . ' from IP ' . $request->ip(),
+        ]);
+
         return back()->withErrors([
             'email' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
         ])->onlyInput('email');
     }
+
 
     public function logout(Request $request)
     {

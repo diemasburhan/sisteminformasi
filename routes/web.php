@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\LecturerController;
 use App\Http\Controllers\Admin\OrgMemberController;
 use App\Http\Controllers\Admin\ExpertiseController;
+use App\Http\Controllers\Admin\GalleryController;
+use App\Models\Gallery;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,14 +25,15 @@ Route::get('/post/{slug}', [HomeController::class, 'post'])->name('public.post.s
 Route::get('/berita', [HomeController::class, 'posts'])->name('public.posts');
 Route::get('/page/{slug}', [HomeController::class, 'page'])->name('public.page.show');
 Route::post('/post/{postId}/comment', [HomeController::class, 'comment'])->name('public.comment.store');
+Route::post('/faq/submit', [\App\Http\Controllers\FaqController::class, 'submit'])->name('public.faq.submit')->middleware('throttle:10,1');
 
 // Auth Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Admin Panel (Protected by Auth Middleware)
-Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
+// Admin Panel (Protected by Auth + Admin Role Middleware)
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
     Route::get('/', function() {
         return redirect()->route('admin.dashboard');
     });
@@ -53,8 +56,59 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     // Org Members CMS
     Route::resource('org-members', OrgMemberController::class, ['as' => 'admin'])->except(['show']);
+
+    // SI Galeri CMS
+    Route::resource('galleries', GalleryController::class, [
+    'as' => 'admin'
+    ])->except(['show']);
+
+    // Pertanyaan FAQ CMS
+
+    // Export semua data FAQ ke Excel
+    Route::get('/faq-questions/export', [
+    \App\Http\Controllers\Admin\FaqQuestionController::class,
+    'export'
+    ])->name('admin.faq-questions.export');
+
+    Route::resource('faq-questions', \App\Http\Controllers\Admin\FaqQuestionController::class, [
+    'as' => 'admin'
+    ])->only(['index', 'show', 'update', 'destroy']);
     
     // Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
 });
+
+// ==========================================
+// PUBLIC - SI GALERI
+// ==========================================
+
+Route::get('/si.galeri', function () {
+
+    $query = Gallery::where('status', 'published');
+
+    // Filter berdasarkan kategori
+    if (request()->filled('category')) {
+        $query->where('category', request('category'));
+    }
+
+    $galleries = $query
+        ->latest()
+        ->get();
+
+    // Daftar kategori SI Galeri
+    $categories = [
+        'Kegiatan SI',
+        'HIMA SI',
+        'Kampus',
+        'Santai',
+        'Cerita Mahasiswa',
+    ];
+
+    return view(
+        'public.si-galeri',
+        compact('galleries', 'categories')
+    );
+
+})->name('si.galeri');

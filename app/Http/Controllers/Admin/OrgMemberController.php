@@ -42,7 +42,7 @@ class OrgMemberController extends Controller
         $photoPath = null;
         if ($request->hasFile('photo_file')) {
             $file = $request->file('photo_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/org'), $filename);
             $photoPath = 'uploads/org/' . $filename;
         }
@@ -88,7 +88,7 @@ class OrgMemberController extends Controller
                 @unlink(public_path($member->photo));
             }
             $file = $request->file('photo_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/org'), $filename);
             $photoPath = 'uploads/org/' . $filename;
         }

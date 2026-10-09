@@ -59,7 +59,7 @@ class LecturerController extends Controller
         $photoPath = null;
         if ($request->hasFile('photo_file')) {
             $file = $request->file('photo_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/lecturers'), $filename);
             $photoPath = 'uploads/lecturers/' . $filename;
         }
@@ -109,7 +109,7 @@ class LecturerController extends Controller
                 @unlink(public_path($lecturer->photo));
             }
             $file = $request->file('photo_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/lecturers'), $filename);
             $photoPath = 'uploads/lecturers/' . $filename;
         }
